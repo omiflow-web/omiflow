@@ -10,7 +10,7 @@ export async function deployToNetlify(html: string, _bizName: string): Promise<s
   // Build zip
   const zip = new JSZip()
   zip.file('index.html', html)
-  const bytes = await zip.generateAsync({ type: 'nodebuffer' })
+  const bytes = await zip.generateAsync({ type: 'uint8array' })
 
   const delays = [0, 8000, 16000]
 
