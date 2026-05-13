@@ -75,17 +75,18 @@ PRODUCT: When a client calls and nobody picks up, the AI answers on ring three o
 RULES:
 - Zero em dashes (—) or en dashes (–) ever
 - No filler phrases
-- Line 1: first name only OR business name — nothing else
+- Line 1: always write "Hi [first name]," or "Hi [business name]," — always include the word Hi and a comma after the name
 - Never name Omiflow
 - End every email with: Naomi | Omiflow | omiflow.co.uk
-- Demo link in FIRST HALF with a label before it
+- Demo link in FIRST HALF — write a natural label sentence then the link on the same line, e.g. "I put together a quick demo for you: [DEMO_LINK_PLACEHOLDER]"
+- Sound like a real person who actually looked at their business. Be specific, warm, direct. Not salesy.
 
 EMAIL 1 — 70-90 words total including signature:
-Name the exact moment a caller gives up — while they're busy, potential client calls, hits voicemail, calls competitor in 60 seconds. Label then demo: "Hear what your callers hear instead: [DEMO_LINK_PLACEHOLDER]". One closing line. Signature.
+Open with the specific moment they lost a lead — a potential client called while they were busy, hit voicemail, and called the next business in under a minute. Make it vivid and real. Then a natural label sentence + demo link. One warm closing line. Signature.
 
-EMAIL 2 — 65-80 words: Social proof from similar business. Label + demo early. One line. Signature.
-EMAIL 3 — 65-80 words: Cost per missed call — give a number. Label + demo. One line. Signature.
-EMAIL 4 — 55-65 words: Warm genuine final. Label + demo. Signature.
+EMAIL 2 — 65-80 words: One specific social proof result from a similar business. Natural label + demo. One warm line. Signature.
+EMAIL 3 — 65-80 words: What each missed call costs them in real money — give a specific number. Natural label + demo. One line. Signature.
+EMAIL 4 — 55-65 words: Warm genuine final, no pressure whatsoever. Natural label + demo. Signature.
 
 Count words. Rewrite any outside range.
 
@@ -112,17 +113,18 @@ STEP 2 — WRITE 4 EMAILS:
 RULES:
 - Zero em dashes (—) or en dashes (–) ever
 - No filler phrases
-- Line 1: first name only OR business name — nothing else
+- Line 1: always write "Hi [first name]," or "Hi [business name]," — always include the word Hi and a comma after the name
 - Never name Omiflow or any agency
 - End every email with: Naomi | Omiflow | omiflow.co.uk
-- Demo link in FIRST HALF with a label before it
+- Demo link in FIRST HALF — write a natural label sentence then the link, e.g. "I rebuilt it to show what it could look like: [DEMO_LINK_PLACEHOLDER]"
+- Sound like a real person who visited their site and genuinely noticed something. Specific, warm, human. Not a template.
 
 EMAIL 1 — 80-100 words total including signature:
-Name the specific problem. Show the exact moment a customer gives up. Label + demo: "I rebuilt it to show what it could look like: [DEMO_LINK_PLACEHOLDER]". One honest closing line. Signature.
+Name the specific real problem you found on their site. Describe the exact moment a real customer gives up because of it. Natural label sentence + demo link. One honest warm closing line. Signature.
 
-EMAIL 2 — 70-85 words: Named social proof for their niche. Label + demo. One line. Signature.
-EMAIL 3 — 70-85 words: Weekly enquiries lost — give a number. Label + demo. One line. Signature.
-EMAIL 4 — 55-70 words: Warm genuine final. Label + demo. Signature.
+EMAIL 2 — 70-85 words: One named social proof result matched to their niche. Natural label + demo. One warm line. Signature.
+EMAIL 3 — 70-85 words: How many enquiries per week they are likely losing — give a specific number. Natural label + demo. One line. Signature.
+EMAIL 4 — 55-70 words: Warm genuine final, no pressure. Natural label + demo. Signature.
 
 Count words. Rewrite any outside range.
 
@@ -158,7 +160,7 @@ export async function generateWithClaude(
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-5',
         max_tokens: 4000,
-        tools: [{ type: 'web_search_20250305' as const, name: 'web_search' }] as any,
+        tools: [{ type: 'web_search_20250305' as const, name: 'web_search' }],
         messages: [{ role: 'user', content: prompt }],
       })
 
