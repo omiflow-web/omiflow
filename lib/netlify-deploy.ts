@@ -26,7 +26,7 @@ export async function deployToNetlify(html: string, _bizName: string): Promise<s
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/zip',
         },
-        body: bytes,
+        body: bytes as unknown as BodyInit,
       })
 
       if (resp.status === 429) {
