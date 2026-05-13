@@ -695,7 +695,7 @@ footer{background:#0a0a0a;padding:48px 80px 32px;border-top:1px solid var(--bord
     <div class="ps rv d1"><div class="ps-ring"><div class="ps-n">01</div></div><div class="ps-title">Free site survey</div><div class="ps-desc">Quick turnaround. No obligation.</div></div>
     <div class="ps rv d2"><div class="ps-ring"><div class="ps-n">02</div></div><div class="ps-title">Fixed-price quote</div><div class="ps-desc">We survey the job properly before quoting.</div></div>
     <div class="ps rv d3"><div class="ps-ring"><div class="ps-n">03</div></div><div class="ps-title">Installation begins</div><div class="ps-desc">Fixed price, fixed timeline, no surprises.</div></div>
-    <div class="ps rv d4"><div class="ps-ring"><div class="ps-n">04</div></div><div class="ps-title">Snagged and signed off</div><div class="ps-desc">We don't leave until you're happy.</div></div>
+    <div class="ps rv d4"><div class="ps-ring"><div class="ps-n">04</div></div><div class="ps-title">Snagged and signed off</div><div class="ps-desc">We don't leave until you are happy.</div></div>
   </div>
 </section>
 
