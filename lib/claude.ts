@@ -158,7 +158,7 @@ export async function generateWithClaude(
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-5',
         max_tokens: 4000,
-        tools: [{ type: 'web_search_20250305' as const, name: 'web_search' }],
+        tools: [{ type: 'web_search_20250305' as const, name: 'web_search' }] as any,
         messages: [{ role: 'user', content: prompt }],
       })
 
