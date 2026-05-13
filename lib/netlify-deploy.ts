@@ -7,9 +7,10 @@ export async function deployToNetlify(html: string, _bizName: string): Promise<s
     return null
   }
 
-  // Build zip
+  // Build zip — include _headers so Netlify serves HTML with correct Content-Type
   const zip = new JSZip()
   zip.file('index.html', html)
+  zip.file('_headers', '/*\n  Content-Type: text/html; charset=utf-8\n  X-Frame-Options: SAMEORIGIN\n')
   const bytes = await zip.generateAsync({ type: 'uint8array' })
 
   const delays = [0, 8000, 16000]
@@ -26,7 +27,7 @@ export async function deployToNetlify(html: string, _bizName: string): Promise<s
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/zip',
         },
-        body: bytes as unknown as BodyInit,
+        body: bytes,
       })
 
       if (resp.status === 429) {
