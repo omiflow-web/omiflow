@@ -398,8 +398,8 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60),{passive:true});
 function toggleMenu(){document.getElementById('mm').classList.toggle('open')}
 function closeMenu(){document.getElementById('mm').classList.remove('open')}
-const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -20px 0px'});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+// Make all sections immediately visible — no observer dependency
+document.querySelectorAll('.rv').forEach(el=>el.classList.add('on'));
 const tw=document.getElementById('tw');
 const phrases=['{{HERO_SUBLINE_A}}','{{HERO_SUBLINE_B}}'];
 let pi=0,ci=0,del=false,w=0;
@@ -695,7 +695,7 @@ footer{background:#0a0a0a;padding:48px 80px 32px;border-top:1px solid var(--bord
     <div class="ps rv d1"><div class="ps-ring"><div class="ps-n">01</div></div><div class="ps-title">Free site survey</div><div class="ps-desc">Quick turnaround. No obligation.</div></div>
     <div class="ps rv d2"><div class="ps-ring"><div class="ps-n">02</div></div><div class="ps-title">Fixed-price quote</div><div class="ps-desc">We survey the job properly before quoting.</div></div>
     <div class="ps rv d3"><div class="ps-ring"><div class="ps-n">03</div></div><div class="ps-title">Installation begins</div><div class="ps-desc">Fixed price, fixed timeline, no surprises.</div></div>
-    <div class="ps rv d4"><div class="ps-ring"><div class="ps-n">04</div></div><div class="ps-title">Snagged and signed off</div><div class="ps-desc">We don't leave until you are happy.</div></div>
+    <div class="ps rv d4"><div class="ps-ring"><div class="ps-n">04</div></div><div class="ps-title">Snagged and signed off</div><div class="ps-desc">We don't leave until you're happy.</div></div>
   </div>
 </section>
 
@@ -764,8 +764,9 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('stuck',scrollY>50),{passive:true});
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+document.querySelectorAll('.rv').forEach(el=>el.classList.add('on'));
+// Fallback: ensure all elements become visible even if observer misfires
+setTimeout(()=>{document.querySelectorAll('.rv:not(.on)').forEach(el=>el.classList.add('on'));},1800);
 const phrases=['Bespoke kitchen fitting · Manchester','Over 400 kitchens installed across the North West'];
 const tw=document.getElementById('tw');
 let pi=0,ci=0,del=false,wait=0;
@@ -1176,8 +1177,9 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60),{passive:true});
 function toggleMenu(){document.getElementById('mm').classList.toggle('open')}
 function closeMenu(){document.getElementById('mm').classList.remove('open')}
-const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -24px 0px'});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+document.querySelectorAll('.rv').forEach(el=>el.classList.add('on'));
+// Fallback: ensure all elements become visible even if observer misfires
+setTimeout(()=>{document.querySelectorAll('.rv:not(.on)').forEach(el=>el.classList.add('on'));},1800);
 const tw=document.getElementById('tw');
 const phrases=['Wedding photography · London','Documentary storytelling since 2014'];
 let pi=0,ci=0,del=false,w=0;
@@ -1516,8 +1518,9 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>{},{ passive:true });
 function toggleMenu(){document.getElementById('mm').classList.toggle('open')}
 function closeMenu(){document.getElementById('mm').classList.remove('open')}
-const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -24px 0px'});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+document.querySelectorAll('.rv').forEach(el=>el.classList.add('on'));
+// Fallback: ensure all elements become visible even if observer misfires
+setTimeout(()=>{document.querySelectorAll('.rv:not(.on)').forEach(el=>el.classList.add('on'));},1800);
 const tw=document.getElementById('tw');
 const phrases=['Independent solicitors · Birmingham','Family law, property and wills specialists'];
 let pi=0,ci=0,del=false,w=0;
@@ -1877,8 +1880,8 @@ const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60),{passive:true});
 function toggleMenu(){document.getElementById('mm').classList.toggle('open')}
 function closeMenu(){document.getElementById('mm').classList.remove('open')}
-const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -20px 0px'});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+// Make all sections immediately visible — no observer dependency
+document.querySelectorAll('.rv').forEach(el=>el.classList.add('on'));
 const tw=document.getElementById('tw');
 const phrases=['Medical aesthetics · Scottsdale, AZ','Board-certified practitioners'];
 let pi=0,ci=0,del=false,w=0;
@@ -1917,20 +1920,22 @@ function getNicheContent(niche: string, city: string): NicheContent {
     tagline: `Professional services in ${city}`, cta: 'Get in Touch',
     trust: ['Free consultation','Fully insured','Locally trusted','5 star reviews'],
     stats: [{n:'500+',l:'Happy clients'},{n:'4.9',l:'Google rating'},{n:'10+',l:'Years experience'}],
-    services: [{t:'Core Service',d:'Professional service delivered with expertise and care.'},{t:'Consultation',d:'We understand your needs.'},{t:'Ongoing Support',d:'We are here after the job is done.'}],
+    services: [{t:'Core Service',d:'Professional service delivered with expertise and care.'},{t:'Consultation',d:'We understand your needs.'},{t:'Ongoing Support',d:'We're here after the job is done.'}],
     process: [{t:'Get in touch',d:'Call or message.'},{t:'Consultation',d:'We listen.'},{t:'We work',d:'Professional and reliable.'},{t:'Done right',d:'We follow up.'}],
     reviews: [{t:'Exceptional service.',a:`Satisfied client, ${city}`},{t:'Brilliant results.',a:`Happy customer, ${city}`},{t:'Highly recommended.',a:`Returning client, ${city}`}],
     about: `We are dedicated professionals serving ${city}.`,
     typewriter: [`Professional services in ${city}`, `Trusted by local businesses`],
   }
 
-  if (/dental/.test(n)) return { heroH1:'A smile you are proud to show', heroSub:`Professional dental care in ${city}`, heroSubA:`Dental practice in ${city}`, heroSubB:'Gentle. Modern. Welcoming.', tagline:`Trusted dental care in ${city}`, cta:'Book an Appointment', trust:['New patients welcome','Emergency appointments','Interest-free finance','Family-friendly'], stats:[{n:'2,400+',l:'Patients treated'},{n:'4.9',l:'Google rating'},{n:'15+',l:`Years in ${city}`}], services:[{t:'Teeth Whitening',d:'Professional whitening from the first session.'},{t:'Invisalign',d:'Straighten your smile discreetly.'},{t:'Emergency Care',d:'Same-day appointments for dental trauma.'}], process:[{t:'Book online',d:'Same-day slots often available.'},{t:'Consultation',d:'No pressure, no rush.'},{t:'Treatment plan',d:'Clear options and transparent pricing.'},{t:'Ongoing care',d:'Regular check-ups.'}], reviews:[{t:'Best dental practice I have been to.',a:`Sophie R., ${city}`},{t:'Finally a dentist I do not dread.',a:`Mark T., ${city}`},{t:'Emergency sorted same day.',a:`Priya M., ${city}`}], about:`${city} patients choose us because we listen before we treat.`, typewriter:[`Dental practice in ${city}`,'New patients always welcome'] }
+  if (/dental/.test(n)) return { heroH1:'A smile you are proud to show', heroSub:`Professional dental care in ${city}`, heroSubA:`Dental practice in ${city}`, heroSubB:'Gentle. Modern. Welcoming.', tagline:`Trusted dental care in ${city}`, cta:'Book an Appointment', trust:['New patients welcome','Emergency appointments','Interest-free finance','Family-friendly'], stats:[{n:'2,400+',l:'Patients treated'},{n:'4.9',l:'Google rating'},{n:'15+',l:`Years in ${city}`}], services:[{t:'Teeth Whitening',d:'Professional whitening from the first session.'},{t:'Invisalign',d:'Straighten your smile discreetly.'},{t:'Emergency Care',d:'Same-day appointments for dental trauma.'}], process:[{t:'Book online',d:'Same-day slots often available.'},{t:'Consultation',d:'No pressure, no rush.'},{t:'Treatment plan',d:'Clear options and transparent pricing.'},{t:'Ongoing care',d:'Regular check-ups.'}], reviews:[{t:'Best dental practice I've been to.',a:`Sophie R., ${city}`},{t:'Finally a dentist I don't dread.',a:`Mark T., ${city}`},{t:'Emergency sorted same day.',a:`Priya M., ${city}`}], about:`${city} patients choose us because we listen before we treat.`, typewriter:[`Dental practice in ${city}`,'New patients always welcome'] }
 
   if (/physio|osteo|chiro/.test(n)) return { ...defaults, heroH1:'Pain holding you back?', heroSub:`Expert physiotherapy in ${city}`, cta:'Book an Assessment', trust:['Same-week appointments','HCPC registered','Covered by major insurers','Home visits'], typewriter:[`Physiotherapy in ${city}`,'HCPC registered practitioners'] }
 
   if (/salon|hair|barber|beauty/.test(n)) return { ...defaults, heroH1:'Hair that turns heads', heroSub:`Colour and cut specialists in ${city}`, cta:'Book Now', typewriter:[`Hair salon in ${city}`,'Colour specialists'] }
 
   if (/build|construct|plumb|kitchen|electri|roofer|landscap|paint|decor/.test(n)) return { ...defaults, heroH1:'Every job, done right', heroSub:`Local specialists in ${city}. Free quotes. Fully insured.`, cta:'Get a Free Quote', typewriter:[`Specialists in ${city}`,'Free quotes. Fully insured.'] }
+
+  if (/restaur|cafe|eatery|bistro|diner|takeaway|takeout|pizza|sushi|food|bar|pub|grill|burger|kebab|caribbean|mediterranean|halal|fusion|wing/.test(n)) return { ...defaults, heroH1:'Food worth coming back for', heroSub:`Honest cooking, served fresh in ${city}`, heroSubA:`${n.split(' ').slice(-2).join(' ')} in ${city}`, heroSubB:'Order in. Dine in. Come back.', tagline:`Local restaurant in ${city}`, cta:'See the Menu', trust:['Dine in & takeaway','Online ordering','Locally sourced','Open 7 days'], stats:[{n:'4.8',l:'Google rating'},{n:'2,000+',l:'Happy customers'},{n:'5+',l:`Years serving ${city}`}], services:[{t:'Dine In',d:'A relaxed space to enjoy a proper meal. No rush, no fuss.'},{t:'Takeaway',d:'Order ahead and collect when ready, or we deliver to your door.'},{t:'Catering',d:'Private events, office lunches, and group bookings welcome.'}], process:[{t:'Browse the menu',d:'Full menu online, updated regularly.'},{t:'Place your order',d:'Call ahead or order through our site.'},{t:'Pick up or delivery',d:'Fresh every time, no compromise.'},{t:'Come back soon',d:'Most of our customers are regulars.'}], reviews:[{t:'Best food in the area by a mile.',a:`Regular customer, ${city}`},{t:'Always fresh, always consistent.',a:`Google review, ${city}`},{t:'Came for lunch, stayed for dessert.',a:`Dine-in guest, ${city}`}], about:`${city}'s locals have been coming through our doors for years. We cook everything from scratch.`, typewriter:[`Restaurant in ${city}`,'Fresh food, every day'] }
 
   if (/photo|tattoo|video|wedding|portrait/.test(n)) return { ...defaults, heroH1:'Moments worth remembering', heroSub:`Documentary photography based in ${city}`, cta:'Check Availability', typewriter:[`Photography in ${city}`,'Documentary storytelling'] }
 
