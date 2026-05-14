@@ -5,7 +5,6 @@ import { buildWebsiteDemo } from '@/lib/demo-builders/website'
 import { buildVoicemailDemo } from '@/lib/demo-builders/voicemail'
 import type { GenerateLeadRequest, GenerateLeadResponse, GeneratedLead } from '@/lib/types'
 
-// Allow up to 5 minutes for a single lead (web search + emails + deploy)
 export const maxDuration = 300
 
 export async function POST(req: NextRequest): Promise<NextResponse<GenerateLeadResponse>> {
@@ -17,28 +16,30 @@ export async function POST(req: NextRequest): Promise<NextResponse<GenerateLeadR
       return NextResponse.json({ success: false, error: 'Missing lead data' }, { status: 400 })
     }
 
-    // 1. Generate emails via Claude (server-side, no CORS)
-    const generated = await generateWithClaude(lead, campaign, vapiPublicKey, vapiAssistantId)
+    // Step 1 — Claude researches + writes 4 emails (2 args only)
+    const generated = await generateWithClaude(lead, campaign)
 
-    // 2. Build demo HTML
+    // Step 2 — Build demo HTML server-side
     const demoHtml = campaign === 'vm'
       ? buildVoicemailDemo(lead, vapiPublicKey || '', vapiAssistantId || '')
       : buildWebsiteDemo(lead, generated.niche, generated.template)
 
-    // 3. Deploy demo to Netlify (server-side, no CORS)
-    const demoUrl = await deployToNetlify(demoHtml, lead.business_name)
+    // Step 3 — Deploy demo. Hard fail if deployment cannot be verified.
+    const deploy = await deployToNetlify(demoHtml, lead.business_name)
 
-    // 4. Inject real URL into all email bodies
+    if (!deploy.success) {
+      return NextResponse.json({
+        success: false,
+        error: `Demo deploy failed: ${deploy.error}`,
+      }, { status: 422 })
+    }
+
+    // Step 4 — Inject verified HTTPS URL into anchor hrefs only
+    const demoUrl = deploy.url
     const emails = generated.emails.map(e => ({
       ...e,
-      body: demoUrl
-        ? e.body.replace(/\[DEMO_LINK_PLACEHOLDER\]/g, demoUrl)
-        : e.body,
+      body: e.body.replace(/\[DEMO_LINK_PLACEHOLDER\]/g, demoUrl),
     }))
-
-    if (!demoUrl) {
-      console.warn(`[Generate] No demo URL for ${lead.business_name} — placeholder kept`)
-    }
 
     const result: GeneratedLead = {
       lead,
