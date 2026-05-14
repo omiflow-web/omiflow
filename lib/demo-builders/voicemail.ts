@@ -10,9 +10,10 @@ export function buildVoicemailDemo(
   const fname = (lead.name_for_emails || lead.business_name?.split(' ')[0] || 'there')
     .replace(/"/g, '&quot;')
 
+  // Escape for safe use inside JS template literals
   const bizJs = biz.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$')
-  const vkJs = (vapiPublicKey || '').replace(/"/g, '\\"')
-  const aidJs = (vapiAssistantId || '').replace(/"/g, '\\"')
+  const vkJs = (vapiPublicKey || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+  const aidJs = (vapiAssistantId || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"')
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -24,6 +25,8 @@ export function buildVoicemailDemo(
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#111;font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:52px 20px 40px}
+/* Hide any Vapi floating button that the SDK might inject */
+#vapi-support-btn,#vapi-support-btn-container,.vapi-btn,.vapi-widget-wrapper{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 .bar{position:fixed;top:0;left:0;right:0;background:#0a0a0a;border-bottom:1px solid #1f1f1f;color:#c8f155;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:8px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:100}
 .dot{width:5px;height:5px;border-radius:50%;background:#c8f155;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -35,306 +38,320 @@ h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:#1a
 .step{display:flex;gap:12px;align-items:center}
 .num{width:22px;height:22px;border-radius:50%;background:#b797ff;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .st{font-size:13px;color:#1a1916;font-weight:500;line-height:1.5}
-/* Single action button — state controlled by JS */
-.action-btn{width:100%;padding:18px;border:none;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;margin-bottom:10px;font-family:inherit}
-.action-btn.idle{background:#b797ff;color:#fff}
-.action-btn.idle:hover{background:#a47ff5;transform:translateY(-1px)}
-.action-btn.loading{background:#c8b0ff;color:#fff;cursor:default}
-.action-btn.active{background:#fc5c7c;color:#fff}
-.action-btn.active:hover{background:#e04d6c;transform:translateY(-1px)}
-.action-btn.done{background:#f0ebff;color:#7c4dcc;border:1px solid #d4beff}
-.action-btn.done:hover{background:#e8e0ff}
-.pd{width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.9;animation:pulse 1.4s ease infinite}
-@keyframes pulse{0%{transform:scale(1);opacity:1}70%{transform:scale(1.8);opacity:0}100%{transform:scale(1);opacity:0}}
-.bn{font-size:11px;color:#a09890;margin-bottom:4px}
-.err-box{display:none;background:#fff0f0;border:1px solid #fcc;border-radius:10px;padding:12px;font-size:12px;color:#c0392b;margin-top:10px;line-height:1.65;text-align:left}
-.err-box.show{display:block}
-.live-box{display:none;background:#f0ebff;border-radius:14px;padding:14px;margin-top:14px;text-align:left}
-.live-box.show{display:block}
-.live-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7c4dcc;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.btn{width:100%;padding:18px;border:none;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s,transform .15s;margin-bottom:10px;font-family:inherit;outline:none}
+.btn-idle{background:#b797ff;color:#fff}
+.btn-idle:hover{background:#a47ff5;transform:translateY(-1px)}
+.btn-loading{background:#c8b0ff;color:#fff;cursor:default}
+.btn-active{background:#fc5c7c;color:#fff}
+.btn-active:hover{background:#e8446a;transform:translateY(-1px)}
+.btn-done{background:transparent;color:#7c4dcc;border:1.5px solid #d4beff}
+.btn-done:hover{background:#f4f0ff}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse-dot{width:9px;height:9px;border-radius:50%;background:#fff;animation:pulse-a 1.4s ease infinite;flex-shrink:0}
+@keyframes pulse-a{0%{transform:scale(1);opacity:1}70%{transform:scale(1.9);opacity:0}100%{transform:scale(1);opacity:0}}
+.sub-note{font-size:11px;color:#a09890;margin-bottom:4px;min-height:16px}
+.err{display:none;background:#fff0f0;border:1px solid #fcc;border-radius:10px;padding:12px;font-size:12px;color:#c0392b;margin-top:10px;line-height:1.65;text-align:left}
+.err.show{display:block}
+.live{display:none;background:#f0ebff;border-radius:14px;padding:14px;margin-top:14px;text-align:left}
+.live.show{display:block}
+.live-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7c4dcc;margin-bottom:4px;display:flex;align-items:center;gap:6px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 1s infinite}
 .live-sub{font-size:12px;font-weight:300;color:#6b6560;line-height:1.6}
-.result-box{display:none;margin-top:14px;text-align:left}
-.result-box.show{display:block}
+.result{display:none;margin-top:14px;text-align:left}
+.result.show{display:block}
 .sms{background:#1a1916;border-radius:12px;padding:14px}
 .sms-tag{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#c8f155;margin-bottom:5px}
 .sms-body{font-size:12px;font-weight:300;color:rgba(255,255,255,.75);line-height:1.7}
 hr.dv{border:none;border-top:1px solid #ede8e0;margin:24px 0}
-.cta{font-size:12px;font-weight:300;color:#6b6560;line-height:1.8}
-.cta a{color:#b797ff;font-weight:500;text-decoration:none}
+.cta-footer{font-size:12px;font-weight:300;color:#6b6560;line-height:1.8}
+.cta-footer a{color:#b797ff;font-weight:500;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="bar"><div class="dot"></div>Demo by Omiflow &nbsp;&middot;&nbsp; Built for ${biz}</div>
+
 <div class="card">
   <div class="hi">Hi, ${fname}</div>
   <h1>The call your client made while you were unavailable. Answered.</h1>
   <p class="sub">Every unanswered call is a potential client who moved on. Here is what happens instead.</p>
+
   <div class="steps">
     <div class="step"><div class="num">1</div><div class="st">On ring three of that same call, the line answers and greets your client by your business name</div></div>
     <div class="step"><div class="num">2</div><div class="st">A natural conversation collects their name, reason for calling, and best callback time</div></div>
     <div class="step"><div class="num">3</div><div class="st">You receive a text summary so you can call them back fully informed</div></div>
   </div>
 
-  <button class="action-btn idle" id="action-btn" onclick="handleBtnClick()">
-    <div class="pd" id="pd" style="display:none"></div>
-    <span id="btn-label">Hear how it sounds</span>
+  <button class="btn btn-idle" id="btn" onclick="handleClick()">
+    <span id="btn-icon"></span>
+    <span id="btn-lbl">Hear how it sounds</span>
   </button>
-  <div class="bn" id="bn">No phone needed. Runs in your browser.</div>
+  <div class="sub-note" id="sub-note">No phone needed. Runs in your browser.</div>
 
-  <div class="err-box" id="err-box"></div>
+  <div class="err" id="err"></div>
 
-  <div class="live-box" id="live-box">
-    <div class="live-label"><div class="live-dot"></div>Live call in progress</div>
+  <div class="live" id="live">
+    <div class="live-lbl"><div class="live-dot"></div>Live call in progress</div>
     <div class="live-sub">Speak as if you are a client calling ${biz}. The assistant will respond naturally.</div>
   </div>
 
-  <div class="result-box" id="result-box">
+  <div class="result" id="result">
     <div class="sms">
       <div class="sms-tag">Text sent to you instantly</div>
-      <div class="sms-body">New enquiry received. Caller details and best callback time saved. Ready for your follow-up.</div>
+      <div class="sms-body">New enquiry received. Caller details and best callback time saved.</div>
     </div>
   </div>
 
   <hr class="dv">
-  <div class="cta">Interested in this for ${biz}?<br>Reply to this email or reach us at <a href="mailto:hello@omiflow.co.uk">hello@omiflow.co.uk</a></div>
+  <div class="cta-footer">Interested in this for ${biz}?<br>Reply to this email or reach us at <a href="mailto:hello@omiflow.co.uk">hello@omiflow.co.uk</a></div>
 </div>
 
 <script>
-(function() {
+(function(){
   'use strict';
 
-  var VK = "${vkJs}";
+  // Config — injected server-side
+  var VK  = "${vkJs}";
   var AID = "${aidJs}";
-  var FN = "${bizJs}";
+  var FN  = \`${bizJs}\`;
 
-  // ── State machine ──
-  // idle | loading | active | done | error
-  var state = 'idle';
-  var vapi = null;
-  var sdkLoaded = false;
+  // ── State ────────────────────────────────────────────────────────────
+  var STATE = 'idle';   // idle | loading | active | done | error
+  var vapiInst = null;
+  var sdkReady  = false;
 
-  function el(id) { return document.getElementById(id); }
+  // ── DOM helpers ──────────────────────────────────────────────────────
+  function q(id){ return document.getElementById(id); }
 
-  // ── UI updater ──
-  function setState(newState, errorMsg) {
-    state = newState;
-    var btn = el('action-btn');
-    var label = el('btn-label');
-    var pd = el('pd');
-    var bn = el('bn');
-    var errBox = el('err-box');
-    var liveBox = el('live-box');
+  function applyState(s, errMsg){
+    STATE = s;
+    var btn    = q('btn');
+    var icon   = q('btn-icon');
+    var lbl    = q('btn-lbl');
+    var note   = q('sub-note');
+    var errEl  = q('err');
+    var liveEl = q('live');
 
-    btn.className = 'action-btn ' + (newState === 'error' ? 'idle' : newState);
+    // Clear icon
+    icon.className = '';
+    icon.innerHTML = '';
 
-    switch (newState) {
+    btn.className = 'btn';
+
+    switch(s){
       case 'idle':
-        label.textContent = 'Hear how it sounds';
-        pd.style.display = 'none';
-        bn.style.display = 'block';
-        bn.textContent = 'No phone needed. Runs in your browser.';
-        liveBox.classList.remove('show');
-        errBox.classList.remove('show');
+        btn.classList.add('btn-idle');
+        lbl.textContent = 'Hear how it sounds';
+        note.textContent = 'No phone needed. Runs in your browser.';
+        liveEl.classList.remove('show');
+        errEl.classList.remove('show');
         break;
 
       case 'loading':
-        label.textContent = 'Connecting...';
-        pd.style.display = 'block';
-        bn.style.display = 'none';
-        errBox.classList.remove('show');
+        btn.classList.add('btn-loading');
+        lbl.textContent = 'Connecting...';
+        icon.className = 'spin';
+        note.textContent = '';
+        errEl.classList.remove('show');
         break;
 
       case 'active':
-        label.textContent = 'End call';
-        pd.style.display = 'none';
-        bn.style.display = 'none';
-        liveBox.classList.add('show');
-        errBox.classList.remove('show');
+        btn.classList.add('btn-active');
+        icon.className = 'pulse-dot';
+        lbl.textContent = 'End call';
+        note.textContent = '';
+        liveEl.classList.add('show');
+        errEl.classList.remove('show');
         break;
 
       case 'done':
-        label.textContent = 'Hear it again';
-        pd.style.display = 'none';
-        bn.style.display = 'block';
-        bn.textContent = 'Want to hear it again?';
-        liveBox.classList.remove('show');
-        el('result-box').classList.add('show');
+        btn.classList.add('btn-done');
+        lbl.textContent = 'Hear it again';
+        note.textContent = 'Thanks for listening.';
+        liveEl.classList.remove('show');
+        q('result').classList.add('show');
         break;
 
       case 'error':
-        label.textContent = 'Try again';
-        pd.style.display = 'none';
-        bn.style.display = 'block';
-        bn.textContent = '';
-        liveBox.classList.remove('show');
-        if (errorMsg) {
-          errBox.textContent = errorMsg;
-          errBox.classList.add('show');
+        btn.classList.add('btn-idle');
+        lbl.textContent = 'Try again';
+        note.textContent = '';
+        liveEl.classList.remove('show');
+        if(errMsg){
+          errEl.textContent = errMsg;
+          errEl.classList.add('show');
         }
         break;
     }
   }
 
-  // ── SDK loader — tries multiple CDN paths ──
-  function loadVapiSdk(cb) {
-    if (sdkLoaded && (window.Vapi || window.VapiSDK)) { cb(null); return; }
+  // ── SDK loader ───────────────────────────────────────────────────────
+  // Uses the official Vapi HTML script tag CDN (window.vapiSDK)
+  // Falls back to community UMD bundle (window.Vapi)
+  function loadSDK(cb){
+    if(sdkReady){ cb(null); return; }
 
-    var cdnUrls = [
-      'https://cdn.jsdelivr.net/npm/@vapi-ai/web@2/dist/vapi.umd.js',
-      'https://unpkg.com/@vapi-ai/web@2/dist/vapi.umd.js',
-      'https://cdn.jsdelivr.net/npm/@vapi-ai/web@latest/dist/vapi.umd.js'
-    ];
-    var idx = 0;
+    function tryScript(url, onDone){
+      var s = document.createElement('script');
+      s.src = url;
+      s.async = true;
 
-    function tryNext() {
-      if (idx >= cdnUrls.length) {
-        cb(new Error('Voice SDK could not be loaded from any source. Please check your internet connection.'));
-        return;
-      }
-      var url = cdnUrls[idx++];
-      var script = document.createElement('script');
-      script.src = url;
-      script.async = true;
+      var t = setTimeout(function(){
+        s.onload = s.onerror = null;
+        onDone(new Error('timeout'));
+      }, 10000);
 
-      var timer = setTimeout(function() {
-        script.onload = script.onerror = null;
-        tryNext();
-      }, 8000);
-
-      script.onload = function() {
-        clearTimeout(timer);
-        // Poll for window.Vapi for up to 3s
-        var attempts = 0;
-        var check = setInterval(function() {
-          attempts++;
-          var VapiClass = window.Vapi || window.VapiSDK || (window.Vapi && window.Vapi.default);
-          if (VapiClass) {
-            clearInterval(check);
-            if (!window.Vapi && window.VapiSDK) window.Vapi = window.VapiSDK;
-            sdkLoaded = true;
-            cb(null);
-          } else if (attempts >= 30) {
-            clearInterval(check);
-            tryNext();
+      s.onload = function(){
+        clearTimeout(t);
+        // Poll up to 3s for either window.vapiSDK or window.Vapi
+        var n = 0;
+        var poll = setInterval(function(){
+          n++;
+          if(window.vapiSDK || window.Vapi){
+            clearInterval(poll);
+            onDone(null);
+          } else if(n >= 30){
+            clearInterval(poll);
+            onDone(new Error('SDK not exported after load'));
           }
         }, 100);
       };
 
-      script.onerror = function() {
-        clearTimeout(timer);
-        tryNext();
+      s.onerror = function(){
+        clearTimeout(t);
+        onDone(new Error('script error'));
       };
 
-      document.head.appendChild(script);
+      document.head.appendChild(s);
     }
 
-    tryNext();
+    // Primary: official vapiSDK html-script-tag
+    tryScript(
+      'https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js',
+      function(err){
+        if(!err && window.vapiSDK){ sdkReady = true; cb(null); return; }
+        // Fallback: community UMD bundle that wraps @vapi-ai/web properly for browsers
+        tryScript(
+          'https://cdn.jsdelivr.net/gh/balacodeio/Vapi-Web-UMD@2.1.0/dist/2.1.0/vapi-web-bundle-2.1.0.min.js',
+          function(err2){
+            if(!err2 && window.Vapi){ sdkReady = true; cb(null); return; }
+            cb(new Error('Could not load voice SDK. Please check your internet connection and try again.'));
+          }
+        );
+      }
+    );
   }
 
-  // ── Vapi initialiser ──
-  function initVapi(cb) {
-    if (!VK || !AID) {
-      cb(new Error('Demo not fully configured. Vapi keys are missing. Contact hello@omiflow.co.uk for access.'));
+  // ── Vapi instance factory ────────────────────────────────────────────
+  function createVapi(cb){
+    if(!VK || !AID){
+      cb(new Error('Demo not fully configured. Vapi keys missing. Contact hello@omiflow.co.uk'));
       return;
     }
 
-    loadVapiSdk(function(err) {
-      if (err) { cb(err); return; }
+    loadSDK(function(err){
+      if(err){ cb(err); return; }
 
-      if (vapi) { cb(null); return; } // Already initialised
+      if(vapiInst){ cb(null); return; }
 
-      try {
-        var VapiClass = window.Vapi;
-        vapi = new VapiClass(VK);
+      try{
+        // vapiSDK.run() — official approach, returns a Vapi-compatible instance
+        // The floating button is hidden by CSS above
+        if(window.vapiSDK){
+          vapiInst = window.vapiSDK.run({
+            apiKey: VK,
+            assistant: AID,
+            config: { position: 'bottom-right', offset: '-9999px 0px' }
+          });
+        } else {
+          // Community UMD fallback
+          vapiInst = new window.Vapi(VK);
+        }
 
-        vapi.on('call-start', function() {
-          setState('active');
+        vapiInst.on('call-start', function(){
+          applyState('active');
         });
 
-        vapi.on('call-end', function() {
-          setState('done');
+        vapiInst.on('call-end', function(){
+          applyState('done');
         });
 
-        vapi.on('error', function(e) {
+        vapiInst.on('error', function(e){
           console.error('[Vapi error]', e);
-          var msg = (e && (e.message || e.error || String(e))) || 'Call ended unexpectedly.';
-          if (/permission|microphone|denied/i.test(msg)) {
-            msg = 'Microphone access was denied. Click the padlock in your browser address bar, allow Microphone, then refresh.';
-          } else if (/invalid|key|auth/i.test(msg)) {
-            msg = 'Configuration issue. Please contact hello@omiflow.co.uk';
+          var msg = (e && (e.message || e.error || String(e))) || '';
+          if(/permission|denied|notallowed|microphone/i.test(msg)){
+            applyState('error', 'Microphone access was denied. Click the padlock icon in your browser address bar, allow Microphone, then refresh and try again.');
+          } else if(/invalid|key|auth|unauthorized/i.test(msg)){
+            applyState('error', 'Configuration issue. Please contact hello@omiflow.co.uk to report this.');
+          } else {
+            applyState('error', 'The call ended unexpectedly. Please refresh and try again.');
           }
-          setState('error', msg);
         });
 
         cb(null);
-      } catch(e) {
-        cb(new Error('Could not initialise voice assistant: ' + (e.message || String(e))));
+      } catch(ex){
+        cb(new Error('Could not initialise voice assistant: ' + (ex.message || String(ex))));
       }
     });
   }
 
-  // ── Button click handler ──
-  window.handleBtnClick = function() {
-    if (state === 'loading') return;
+  // ── Button handler ───────────────────────────────────────────────────
+  window.handleClick = function(){
+    if(STATE === 'loading') return;
 
-    if (state === 'active') {
-      // End the call
-      if (vapi) {
-        try { vapi.stop(); } catch(e) { console.warn('[Vapi] stop error', e); }
+    // If call is active, end it
+    if(STATE === 'active'){
+      if(vapiInst){
+        try{ vapiInst.stop(); } catch(e){ console.warn('[Vapi stop]', e); }
       }
       return;
     }
 
-    // Start the call: idle, done, or error -> start
-    setState('loading');
+    applyState('loading');
+
+    // Request microphone permission first — gives cleaner error message if denied
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      applyState('error', 'Your browser does not support microphone access. Please use Chrome, Edge, or Safari.');
+      return;
+    }
 
     navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(function(stream) {
-        stream.getTracks().forEach(function(t) { t.stop(); });
+      .then(function(stream){
+        stream.getTracks().forEach(function(t){ t.stop(); }); // release immediately
 
-        initVapi(function(err) {
-          if (err) {
-            setState('error', err.message);
-            return;
-          }
+        createVapi(function(err){
+          if(err){ applyState('error', err.message); return; }
 
-          try {
-            var callPromise = vapi.start(AID, {
-              variableValues: { firmName: FN }
-            });
-
-            if (callPromise && typeof callPromise.then === 'function') {
-              callPromise.catch(function(e) {
-                var msg = (e && (e.message || String(e))) || 'Could not start the call.';
-                if (/invalid|key|auth|unauthorized/i.test(msg)) {
-                  msg = 'Could not connect. Please contact hello@omiflow.co.uk';
+          try{
+            var p = vapiInst.start(AID, { variableValues: { firmName: FN } });
+            if(p && typeof p.catch === 'function'){
+              p.catch(function(e){
+                var msg = (e && (e.message || String(e))) || '';
+                if(/invalid|key|auth/i.test(msg)){
+                  applyState('error', 'Could not connect. Please contact hello@omiflow.co.uk');
+                } else {
+                  applyState('error', 'Could not start the call. Please refresh and try again.');
                 }
-                setState('error', msg);
               });
             }
-          } catch(e) {
-            setState('error', 'Could not start the call: ' + (e.message || String(e)));
+          } catch(e){
+            applyState('error', 'Could not start the call: ' + (e.message || String(e)));
           }
         });
       })
-      .catch(function(err) {
-        var msg = 'Microphone access is required to hear the demo. ';
-        if (/denied|notallowed/i.test((err.name || err.message || ''))) {
-          msg += 'Click the padlock icon in your address bar, set Microphone to Allow, then refresh and try again.';
+      .catch(function(err){
+        if(/denied|notallowed/i.test((err.name || err.message || ''))){
+          applyState('error', 'Microphone access was denied. Click the padlock icon in your browser address bar, allow Microphone, then refresh and try again.');
         } else {
-          msg += 'Please check your browser microphone settings.';
+          applyState('error', 'Could not access your microphone. Please check your browser settings and try again.');
         }
-        setState('error', msg);
       });
   };
 
-  // ── Pre-warm SDK silently on page load ──
-  window.addEventListener('load', function() {
-    loadVapiSdk(function(err) {
-      if (!err) {
-        initVapi(function() {});
-      }
+  // ── Pre-warm SDK in background ────────────────────────────────────────
+  window.addEventListener('load', function(){
+    loadSDK(function(err){
+      if(!err) createVapi(function(){});
     });
   });
 
