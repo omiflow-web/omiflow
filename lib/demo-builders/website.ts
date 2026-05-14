@@ -214,8 +214,7 @@ footer{background:var(--text);padding:52px 80px 28px}
 .fcredit a{color:#c8f155;border-bottom:1px solid rgba(200,241,85,.3);padding-bottom:1px}
 
 /* ── REVEAL ANIMATIONS ───────────────────────────────────────────────── */
-.rv{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
-.rv.on{opacity:1;transform:none}
+.rv{opacity:1;transform:none}
 .d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}.d4{transition-delay:.28s}
 
 /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
@@ -499,8 +498,7 @@ nav.stuck{background:rgba(17,17,16,.96);backdrop-filter:blur(12px);box-shadow:0 
 .ssub{font-size:16px;font-weight:300;color:var(--muted);max-width:520px;line-height:1.7}
 
 /* Reveal */
-.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
-.rv.on{opacity:1;transform:translateY(0)}
+.rv{opacity:1;transform:none}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
 
 /* PROJECTS GRID */
@@ -689,7 +687,7 @@ footer{background:#0a0a0a;padding:48px 80px 32px;border-top:1px solid var(--bord
   <div style="text-align:center">
     <div class="eyebrow rv" style="justify-content:center"><div class="eyebrow-line"></div>How it works<div class="eyebrow-line"></div></div>
     <h2 class="sh2 rv d1" style="text-align:center">No <span>messing around</span></h2>
-    <p class="ssub rv d2" style="text-align:center;margin:0 auto">Straight talking from quote to completion. Here is how every job goes.</p>
+    <p class="ssub rv d2" style="text-align:center;margin:0 auto">Straight talking from quote to completion. Here's how every job goes.</p>
   </div>
   <div class="process-steps">
     <div class="ps rv d1"><div class="ps-ring"><div class="ps-n">01</div></div><div class="ps-title">Free site survey</div><div class="ps-desc">Quick turnaround. No obligation.</div></div>
@@ -722,7 +720,7 @@ footer{background:#0a0a0a;padding:48px 80px 32px;border-top:1px solid var(--bord
   <div class="contact-inner">
     <div>
       <div class="eyebrow rv"><div class="eyebrow-line"></div>Get a quote</div>
-      <h2 class="sh2 rv d1">Let us talk<br>about your <span>job</span></h2>
+      <h2 class="sh2 rv d1">Let's talk<br>about your <span>job</span></h2>
       <p class="ssub rv d2" style="margin-bottom:24px">We cover Greater Manchester and Cheshire. Free no-obligation quotes, usually within 48 hours.</p>
       <div class="areas-list rv d3">
         <span class="area-tag">{{PHONE}}</span>
@@ -735,7 +733,7 @@ footer{background:#0a0a0a;padding:48px 80px 32px;border-top:1px solid var(--bord
         <div class="c-form-title">Request a free quote</div>
         <div class="fr"><div class="fg"><label class="fl">Name</label><input class="fi" type="text" placeholder="John Smith"></div><div class="fg"><label class="fl">Phone</label><input class="fi" type="tel" placeholder="07700 900 123"></div></div>
         <div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="john@example.com"></div>
-        <div class="fg"><label class="fl">What is the job?</label><textarea class="fi" rows="4" placeholder="Tell us about the work you need done..."></textarea></div>
+        <div class="fg"><label class="fl">What's the job?</label><textarea class="fi" rows="4" placeholder="Tell us about the work you need done..."></textarea></div>
         <button class="f-submit" id="fsub">{{CTA_TEXT}}</button>
       </div>
     </div>
@@ -971,8 +969,7 @@ footer{background:var(--text);padding:48px 80px 24px}
 .fbot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:rgba(255,255,255,.18)}
 .fcredit a{color:#c8f155;border-bottom:1px solid rgba(200,241,85,.3);padding-bottom:1px}
 
-.rv{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
-.rv.on{opacity:1;transform:none}
+.rv{opacity:1;transform:none}
 .d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
 
 @media(max-width:900px){
@@ -1348,8 +1345,7 @@ footer{background:var(--slate);padding:48px 80px 24px}
 .fbot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:rgba(255,255,255,.2)}
 .fcredit a{color:#c8f155;border-bottom:1px solid rgba(200,241,85,.3);padding-bottom:1px}
 
-.rv{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
-.rv.on{opacity:1;transform:none}
+.rv{opacity:1;transform:none}
 .d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}.d4{transition-delay:.28s}
 
 @media(max-width:900px){
@@ -1481,7 +1477,7 @@ footer{background:var(--slate);padding:48px 80px 24px}
   <div class="contact-grid">
     <div>
       <div class="stag rv">Contact</div>
-      <h2 class="sh2 rv d1">Let us talk about <em>your situation</em></h2>
+      <h2 class="sh2 rv d1">Let's talk about <em>your situation</em></h2>
       <p style="font-size:14px;font-weight:300;color:var(--mid);line-height:1.8;margin-bottom:28px" class="rv d2">No commitment. Just a straightforward conversation about how we can help.</p>
       <div class="cdetails rv d3">
         <div class="cdetail"><div class="cd-icon">&#9742;</div><div><div class="cdl">Phone</div><div class="cdv">{{PHONE}}</div></div></div>
@@ -1709,8 +1705,7 @@ footer{background:var(--dark);padding:48px 80px 24px}
 .fcredit a{color:#c8f155;border-bottom:1px solid rgba(200,241,85,.3);padding-bottom:1px}
 
 /* ── REVEAL ───────────────────────────────────────────────────────────── */
-.rv{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
-.rv.on{opacity:1;transform:none}
+.rv{opacity:1;transform:none}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
 
 /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
