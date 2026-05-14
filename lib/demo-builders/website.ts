@@ -1481,7 +1481,7 @@ footer{background:var(--slate);padding:48px 80px 24px}
   <div class="contact-grid">
     <div>
       <div class="stag rv">Contact</div>
-      <h2 class="sh2 rv d1">Let's talk about <em>your situation</em></h2>
+      <h2 class="sh2 rv d1">Let us talk about <em>your situation</em></h2>
       <p style="font-size:14px;font-weight:300;color:var(--mid);line-height:1.8;margin-bottom:28px" class="rv d2">No commitment. Just a straightforward conversation about how we can help.</p>
       <div class="cdetails rv d3">
         <div class="cdetail"><div class="cd-icon">&#9742;</div><div><div class="cdl">Phone</div><div class="cdv">{{PHONE}}</div></div></div>
