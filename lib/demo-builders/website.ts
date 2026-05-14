@@ -722,7 +722,7 @@ footer{background:#0a0a0a;padding:48px 80px 32px;border-top:1px solid var(--bord
   <div class="contact-inner">
     <div>
       <div class="eyebrow rv"><div class="eyebrow-line"></div>Get a quote</div>
-      <h2 class="sh2 rv d1">Let's talk<br>about your <span>job</span></h2>
+      <h2 class="sh2 rv d1">Let us talk<br>about your <span>job</span></h2>
       <p class="ssub rv d2" style="margin-bottom:24px">We cover Greater Manchester and Cheshire. Free no-obligation quotes, usually within 48 hours.</p>
       <div class="areas-list rv d3">
         <span class="area-tag">{{PHONE}}</span>
@@ -735,7 +735,7 @@ footer{background:#0a0a0a;padding:48px 80px 32px;border-top:1px solid var(--bord
         <div class="c-form-title">Request a free quote</div>
         <div class="fr"><div class="fg"><label class="fl">Name</label><input class="fi" type="text" placeholder="John Smith"></div><div class="fg"><label class="fl">Phone</label><input class="fi" type="tel" placeholder="07700 900 123"></div></div>
         <div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="john@example.com"></div>
-        <div class="fg"><label class="fl">What's the job?</label><textarea class="fi" rows="4" placeholder="Tell us about the work you need done..."></textarea></div>
+        <div class="fg"><label class="fl">What is the job?</label><textarea class="fi" rows="4" placeholder="Tell us about the work you need done..."></textarea></div>
         <button class="f-submit" id="fsub">{{CTA_TEXT}}</button>
       </div>
     </div>
