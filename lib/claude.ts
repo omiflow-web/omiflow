@@ -1,9 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { CleanedLead, Campaign, GeneratedEmail } from './types'
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-})
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
 function cleanDashes(text: string): string {
   return text
@@ -17,17 +15,13 @@ function cleanDashes(text: string): string {
 }
 
 function extractJson(text: string): Record<string, unknown> | null {
-  // Strategy 1: entire text is JSON
   try { return JSON.parse(text) } catch (_) {}
 
-  // Strategy 2: find by "niche": or "emails": marker with brace matching
-  for (const marker of ['"niche":', '"emails":']) {
+  for (const marker of ['"emails":', '"niche":']) {
     const mi = text.indexOf(marker)
     if (mi < 0) continue
     let open = -1
-    for (let i = mi; i >= 0; i--) {
-      if (text[i] === '{') { open = i; break }
-    }
+    for (let i = mi; i >= 0; i--) { if (text[i] === '{') { open = i; break } }
     if (open < 0) continue
     let depth = 0, close = -1
     for (let i = open; i < text.length; i++) {
@@ -36,17 +30,13 @@ function extractJson(text: string): Record<string, unknown> | null {
     }
     if (close > open) {
       try {
-        const candidate = JSON.parse(text.slice(open, close + 1)) as Record<string, unknown>
-        if (candidate.emails && Array.isArray(candidate.emails) && (candidate.emails as unknown[]).length >= 4) {
-          return candidate
-        }
+        const c = JSON.parse(text.slice(open, close + 1)) as Record<string, unknown>
+        if (c.emails && Array.isArray(c.emails) && (c.emails as unknown[]).length >= 4) return c
       } catch (_) {}
     }
   }
 
-  // Strategy 3: first { to last }
-  const s = text.indexOf('{')
-  const e = text.lastIndexOf('}')
+  const s = text.indexOf('{'), e = text.lastIndexOf('}')
   if (s >= 0 && e > s) {
     try { return JSON.parse(text.slice(s, e + 1)) } catch (_) {}
   }
@@ -54,85 +44,160 @@ function extractJson(text: string): Record<string, unknown> | null {
   return null
 }
 
-function buildPrompt(lead: CleanedLead, campaign: Campaign, vapiPublicKey?: string, vapiAssistantId?: string): string {
-  const hasSite = lead.site?.startsWith('http')
-
-  if (campaign === 'vm') {
-    return `You are writing 4 cold outreach emails for a business selling AI voicemail services.
+function buildWebsitePrompt(lead: CleanedLead): string {
+  const hasSite = Boolean(lead.site?.startsWith('http'))
+  return `You are writing cold outreach emails from a web designer. You have personally looked at this business's website and noticed something specific.
 
 LEAD:
 Business: ${lead.business_name}
-Website: ${hasSite ? lead.site : 'none'}
-City: ${lead.city || ''}
-
-STEP 1 — FIND OWNER NAME FIRST (mandatory):
-Use web_search to find the owner or manager's first name. Search: "${lead.business_name} owner" and "${lead.business_name} ${lead.city}". Check About/Contact/Team pages. Use the real first name. If after searching you truly find no individual name, open with: ${JSON.stringify(lead.business_name)}, — never "Hi there".
-
-STEP 2 — WRITE 4 EMAILS:
-
-PRODUCT: When a client calls and nobody picks up, the AI answers on ring three of that same call — not a separate call — has a real conversation, collects their details and best callback time, and texts the business a summary before the caller hangs up.
-
-RULES:
-- Zero em dashes (—) or en dashes (–) ever
-- No filler phrases
-- Line 1: always write "Hi [first name]," or "Hi [business name]," — always include the word Hi and a comma after the name
-- Never name Omiflow
-- End every email with: Naomi | Omiflow | omiflow.co.uk
-- Demo link in FIRST HALF — write a natural label sentence then the link on the same line, e.g. "I put together a quick demo for you: [DEMO_LINK_PLACEHOLDER]"
-- Sound like a real person who actually looked at their business. Be specific, warm, direct. Not salesy.
-
-EMAIL 1 — 70-90 words total including signature:
-Open with the specific moment they lost a lead — a potential client called while they were busy, hit voicemail, and called the next business in under a minute. Make it vivid and real. Then a natural label sentence + demo link. One warm closing line. Signature.
-
-EMAIL 2 — 65-80 words: One specific social proof result from a similar business. Natural label + demo. One warm line. Signature.
-EMAIL 3 — 65-80 words: What each missed call costs them in real money — give a specific number. Natural label + demo. One line. Signature.
-EMAIL 4 — 55-65 words: Warm genuine final, no pressure whatsoever. Natural label + demo. Signature.
-
-Count words. Rewrite any outside range.
-
-IMPORTANT: End your response with the JSON and nothing after it.
-
-{"niche":"detected niche","website_found":"url or empty","emails":[{"day":1,"subject":"max 7 words","body":"full email text"},{"day":4,"subject":"","body":""},{"day":10,"subject":"","body":""},{"day":21,"subject":"","body":""}]}`
-  } else {
-    return `You are writing 4 cold outreach emails for a web design agency.
-
-LEAD:
-Business: ${lead.business_name}
-Website: ${hasSite ? lead.site : 'none'}
+Website: ${hasSite ? lead.site : 'none found'}
 City: ${lead.city || ''}
 Country: ${lead.country || 'UK'}
-${lead.description ? 'Description: ' + lead.description : ''}
+${lead.description ? 'Type of business: ' + lead.description : ''}
 
-STEP 1 — RESEARCH (mandatory):
-A: Find owner/manager first name — search "${lead.business_name} owner" and check About/Contact page. Use real name. If truly not found, open with: ${JSON.stringify(lead.business_name)}, — never "Hi there".
-B: ${hasSite ? `Visit ${lead.site}. Find ONE specific real problem: slow load, buried phone number, no reviews, blurry images, no clear CTA, outdated design. Name exactly what you saw.` : `Search "${lead.business_name} ${lead.city}" and understand their web presence.`}
-C: Detect exact niche (e.g. "private dental practice", "kitchen fitter", "wedding photographer").
+STEP 1 — FIND THE OWNER NAME (mandatory):
+${hasSite
+    ? `Visit ${lead.site} and search "${lead.business_name} owner" or "${lead.business_name} ${lead.city} founded by".`
+    : `Search "${lead.business_name} ${lead.city} owner".`}
+You must find a real first name. If genuinely not found after searching, use the business name.
 
-STEP 2 — WRITE 4 EMAILS:
+STEP 2 — FIND ONE REAL SPECIFIC PROBLEM (mandatory):
+${hasSite
+    ? `Visit ${lead.site} on a mobile viewport right now. Look for one specific real problem:
+- Is the phone number above the fold on mobile?
+- Does the navigation obscure content on scroll?
+- How long do images take to load?
+- Is there a clear next step (book, call, enquire)?
+- Are there real reviews visible on the homepage?
+- Is the layout consistent or do fonts and styles clash?
+- Is it immediately clear what the business does and where?
+Name exactly what you observed. Not "the site could be improved." Something like:
+"The contact number is in the footer — not visible until you scroll past three sections on mobile."
+"There are four different font weights on the homepage and no single clear CTA."
+"The gallery images are full-resolution — they take around 7 seconds to load on mobile data."`
+    : `Search "${lead.business_name} ${lead.city}" and identify what their web presence is missing.`}
+Also detect the exact niche. Be specific: not "restaurant" but "Caribbean restaurant" or "family-run Jamaican takeaway".
 
-RULES:
-- Zero em dashes (—) or en dashes (–) ever
-- No filler phrases
-- Line 1: always write "Hi [first name]," or "Hi [business name]," — always include the word Hi and a comma after the name
-- Never name Omiflow or any agency
-- End every email with: Naomi | Omiflow | omiflow.co.uk
-- Demo link in FIRST HALF — write a natural label sentence then the link, e.g. "I rebuilt it to show what it could look like: [DEMO_LINK_PLACEHOLDER]"
-- Sound like a real person who visited their site and genuinely noticed something. Specific, warm, human. Not a template.
+STEP 3 — WRITE 4 EMAILS:
 
-EMAIL 1 — 80-100 words total including signature:
-Name the specific real problem you found on their site. Describe the exact moment a real customer gives up because of it. Natural label sentence + demo link. One honest warm closing line. Signature.
+VOICE: You are a sharp, observant web designer. You write like someone who has actually looked at the business, not like a sales tool. Short sentences. Specific. Occasionally a bit dry or understated. You respect the business owner's time.
 
-EMAIL 2 — 70-85 words: One named social proof result matched to their niche. Natural label + demo. One warm line. Signature.
-EMAIL 3 — 70-85 words: How many enquiries per week they are likely losing — give a specific number. Natural label + demo. One line. Signature.
-EMAIL 4 — 55-70 words: Warm genuine final, no pressure. Natural label + demo. Signature.
+BANNED PHRASES — never use any of these:
+"hope you are well", "wanted to reach out", "I noticed your website", "your online presence",
+"improve your digital presence", "modern and clean", "game-changing", "touch base", "feel free",
+"worth a look", "just following up", "boost conversions", "user experience", "UI/UX",
+"website refresh", "hope this finds you", "going forward", any phrase starting with "As a"
 
-Count words. Rewrite any outside range.
+DEMO LINK FORMAT — every email must include the demo as an HTML anchor:
+<a href="[DEMO_LINK_PLACEHOLDER]">visible text</a>
+The visible text should be a short natural phrase like: "See the rebuilt version", "View the demo", "Built a version here"
+Never paste a raw URL. Never use [DEMO_LINK_PLACEHOLDER] as visible text.
 
-IMPORTANT: End your response with the JSON and nothing after it.
+EMAIL FORMAT — all 4 must follow this structure exactly:
+Hi [first name],
 
-{"niche":"exact niche","website_found":"url or empty","template":1,"emails":[{"day":1,"subject":"max 7 words specific curious","body":"full email text"},{"day":4,"subject":"","body":""},{"day":10,"subject":"","body":""},{"day":21,"subject":"","body":""}]}
+[1-2 short sentences: the specific problem you found + the exact moment it costs them a customer]
+
+[1 sentence with the demo anchor: natural lead-in phrase + HTML link]
+
+[1 short closing line — honest, no pressure, not a question]
+
+Naomi | Omiflow | omiflow.co.uk
+
+EMAIL 1 — 70 to 90 words total (count everything including signature):
+The problem you found. What it means for a real customer trying to contact them. The rebuilt demo as an anchor. One honest closing line.
+
+EMAIL 2 — 60 to 75 words:
+One specific named social proof result matched to their niche. For trades: "EON Drylining picked up four new jobs in the first week." For services: "White House Birmingham filled August in nine days." Lead into the demo anchor naturally.
+
+EMAIL 3 — 60 to 75 words:
+Weekly enquiries they are likely losing because of the problem. Give a specific number. Make it feel grounded. Lead into demo anchor.
+
+EMAIL 4 — 50 to 65 words:
+Final. Warm. No pressure. Acknowledge they have probably seen the others. Leave the door open. Demo anchor with text like "Still live if useful".
+
+Count every word including the signature. Rewrite any email that falls outside its range.
+
+OUTPUT: Raw JSON only. No explanation. No text before or after.
+
+{"niche":"specific niche e.g. independent kitchen fitter","website_found":"url or empty","template":1,"emails":[{"day":1,"subject":"6 words max, specific to their situation","body":"full email with HTML anchor"},{"day":4,"subject":"","body":""},{"day":10,"subject":"","body":""},{"day":21,"subject":"","body":""}]}
 template: 1=dental/physio/salon/estate agent, 2=trades/kitchen/builder, 3=photographer/tattoo/videographer, 4=solicitor/financial/mortgage, 5=medspa/aesthetics`
-  }
+}
+
+function buildVoicemailPrompt(lead: CleanedLead): string {
+  const hasSite = Boolean(lead.site?.startsWith('http'))
+  return `You are writing cold outreach emails from someone who has observed how this business handles incoming calls and enquiries. You are selling a service that answers missed calls automatically — not a chatbot, not a voicemail box. When a client calls and nobody picks up, the system answers on ring three of that same call, has a real conversation, and texts the business a summary before the caller hangs up.
+
+LEAD:
+Business: ${lead.business_name}
+Website: ${hasSite ? lead.site : 'none'}
+City: ${lead.city || ''}
+Phone listed: ${lead.phone || 'unknown'}
+
+STEP 1 — FIND THE OWNER NAME (mandatory):
+${hasSite
+    ? `Search "${lead.business_name} owner" and visit ${lead.site} About or Contact page.`
+    : `Search "${lead.business_name} ${lead.city} owner".`}
+You must find a real first name. If not found after genuinely searching, use the business name.
+
+STEP 2 — UNDERSTAND THEIR CALL SITUATION:
+${hasSite
+    ? `Visit ${lead.site}. Look at how they expect people to contact them. Is it phone-first? Is there a booking form? Online chat? Based on the business type and what you can see, think about:
+- When are they likely to be unavailable to answer calls? (in appointments, doing the work, driving, etc.)
+- What does a missed call mean for this type of business specifically?
+- Is there any call handling infrastructure visible, or is it just a phone number?`
+    : `Search "${lead.business_name} ${lead.city}". Think about when this type of business is most likely to miss calls and what the cost is.`}
+Think operationally, not technically. The critique should feel like an observation from someone who tried calling, not a tech pitch.
+
+STEP 3 — WRITE 4 EMAILS:
+
+VOICE: Operational. Grounded. Slightly commercial. You sound like someone who has run a small business and knows what missed calls actually cost. You are not selling "AI." You are pointing out a real operational gap. You have noticed something specific about when this business is likely unavailable.
+
+TONE EXAMPLES — good:
+"Tried calling around lunch and it rang out. Anyone doing that during a busy spell is probably not calling back."
+"Most businesses in your situation have no safety net between a missed ring and a lost booking."
+"Out-of-hours enquiries are most likely disappearing completely right now."
+"If someone calls while you are with a client, there is currently nothing between them and a voicemail they will not leave."
+
+BANNED PHRASES — never use any of these:
+"AI-powered", "AI solution", "modernise", "streamline", "cutting-edge", "innovative",
+"hope you are well", "wanted to reach out", "game-changing", "touch base", "feel free",
+"customer interactions", "improve communication", "digital transformation",
+"hope this finds you", "worth a look", "just following up", any mention of "AI" at all
+
+DEMO LINK FORMAT — every email must include the demo as an HTML anchor:
+<a href="[DEMO_LINK_PLACEHOLDER]">visible text</a>
+Visible text should be natural: "Hear what callers hear", "Listen to a sample call", "Hear a live example"
+Never paste a raw URL. Never use [DEMO_LINK_PLACEHOLDER] as visible text.
+
+EMAIL FORMAT — all 4 must follow this exactly:
+Hi [first name],
+
+[1-2 short sentences: the specific operational moment where a call goes unanswered for this business]
+
+[1 sentence with demo anchor — natural lead-in + HTML link]
+
+[1 short warm closing line — not a question, no pressure]
+
+Naomi | Omiflow | omiflow.co.uk
+
+EMAIL 1 — 65 to 80 words total (count everything including signature):
+The specific moment they miss a call — tied to their actual business type (in a treatment, on site, driving, with a client). The caller rings out, does not leave a voicemail, and calls the next result. Make it vivid and real. Demo anchor with text "Hear what callers hear".
+
+EMAIL 2 — 55 to 70 words:
+One specific operational social proof result from a similar business type. Include a number that feels real ("recovered 11 enquiries in the first month", "three bookings came in overnight in the first week"). Demo anchor with text "Hear a live example".
+
+EMAIL 3 — 55 to 70 words:
+The cost of missed calls in this specific niche. Give a number. What does one lost booking or client typically represent for this type of business? Make it feel grounded, not hypothetical. Demo anchor.
+
+EMAIL 4 — 45 to 60 words:
+Warm, no pressure, final. Acknowledge they have probably seen the others. One honest sentence. Demo anchor with text "Demo is still live".
+
+Count every word including signature. Rewrite any email outside its range.
+
+OUTPUT: Raw JSON only. No explanation. No text before or after.
+
+{"niche":"exact niche","website_found":"url or empty","emails":[{"day":1,"subject":"6 words max, operational and specific","body":"full email with HTML anchor"},{"day":4,"subject":"","body":""},{"day":10,"subject":"","body":""},{"day":21,"subject":"","body":""}]}`
 }
 
 export interface ClaudeGenerateResult {
@@ -145,26 +210,24 @@ export interface ClaudeGenerateResult {
 export async function generateWithClaude(
   lead: CleanedLead,
   campaign: Campaign,
-  vapiPublicKey?: string,
-  vapiAssistantId?: string
 ): Promise<ClaudeGenerateResult> {
-  const prompt = buildPrompt(lead, campaign, vapiPublicKey, vapiAssistantId)
+  const prompt = campaign === 'vm'
+    ? buildVoicemailPrompt(lead)
+    : buildWebsitePrompt(lead)
 
   let lastError: Error | null = null
 
-  // Two attempts
   for (let attempt = 0; attempt < 2; attempt++) {
-    if (attempt > 0) await new Promise(r => setTimeout(r, 6000))
+    if (attempt > 0) await new Promise(r => setTimeout(r, 8000))
 
     try {
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-5',
         max_tokens: 4000,
-        tools: [{ type: 'web_search_20250305' as const, name: 'web_search' }],
+        tools: [{ type: 'web_search_20250305' as const, name: 'web_search' }] as any,
         messages: [{ role: 'user', content: prompt }],
       })
 
-      // Collect all text blocks
       const textBlocks = response.content.filter(b => b.type === 'text')
       if (!textBlocks.length) {
         lastError = new Error(`No text in response. stop_reason: ${response.stop_reason}`)
@@ -175,7 +238,7 @@ export async function generateWithClaude(
       const parsed = extractJson(allText)
 
       if (!parsed || !Array.isArray(parsed.emails) || (parsed.emails as unknown[]).length < 4) {
-        lastError = new Error('JSON not found in response — Claude returned text only')
+        lastError = new Error('JSON not found in response — will retry')
         continue
       }
 
@@ -191,22 +254,20 @@ export async function generateWithClaude(
         websiteFound: String(parsed.website_found || ''),
         emails,
       }
+
     } catch (err) {
       lastError = err instanceof Error ? err : new Error(String(err))
 
-      // Handle rate limit
-      if (lastError.message.includes('exceeded_limit') || lastError.message.includes('rate_limit')) {
-        try {
-          const ej = JSON.parse(lastError.message)
-          if (ej.windows?.['5h']) {
-            const resetTs = ej.windows['5h'].resets_at
-            const resetTime = new Date(resetTs * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
-            throw new Error(`Claude API 5-hour limit reached. Resets at ${resetTime}.`)
-          }
-        } catch (parseErr) {
-          if (parseErr instanceof Error && parseErr.message.includes('Resets at')) throw parseErr
+      // Surface 5-hour rate limit clearly
+      try {
+        const ej = JSON.parse(lastError.message)
+        if (ej.type === 'exceeded_limit' && ej.windows?.['5h']) {
+          const resetTs = ej.windows['5h'].resets_at
+          const resetTime = new Date(resetTs * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+          throw new Error(`Claude API 5-hour limit reached. Resets at ${resetTime}. Stop generation and resume then.`)
         }
-        throw lastError
+      } catch (parseErr) {
+        if (parseErr instanceof Error && parseErr.message.includes('Resets at')) throw parseErr
       }
     }
   }
