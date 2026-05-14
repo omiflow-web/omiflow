@@ -107,19 +107,23 @@ Hi [first name],
 Naomi | Omiflow | omiflow.co.uk
 
 EMAIL 1 — 70 to 90 words total (count everything including signature):
-Your specific observation. The customer consequence. Demo link. One honest close.
+Your specific observation. The customer consequence. Then one sentence explaining what the demo link is — e.g. "I rebuilt their site to show what a cleaner version could look like — takes about 20 seconds to scroll through." Then the link. One honest close.
+<a href="[DEMO_LINK_PLACEHOLDER]">View the demo</a>
 
 EMAIL 2 — 60 to 75 words:
 One real named social proof result matched to their niche.
 Trades: "EON Drylining picked up four new jobs in the first week."
 Services: "White House Birmingham filled August in nine days."
-Lead naturally into: <a href="[DEMO_LINK_PLACEHOLDER]">Same approach here</a>
+Brief reference to the demo as a rebuilt version of their type of site.
+<a href="[DEMO_LINK_PLACEHOLDER]">Same approach here</a>
 
 EMAIL 3 — 60 to 75 words:
-How many enquiries per week they are likely losing due to the issue. Give a specific number. Make it grounded. Lead into: <a href="[DEMO_LINK_PLACEHOLDER]">Demo still here</a>
+How many enquiries per week they are likely losing. Give a specific number. Brief mention that the demo shows what a better version could look like.
+<a href="[DEMO_LINK_PLACEHOLDER]">Demo still here</a>
 
 EMAIL 4 — 50 to 65 words:
-Warm final. No pressure. Brief. Lead into: <a href="[DEMO_LINK_PLACEHOLDER]">Still live if useful</a>
+Warm final. No pressure. One honest sentence. Brief note that the demo is still live.
+<a href="[DEMO_LINK_PLACEHOLDER]">Still live if useful</a>
 
 Count every word including signature. Rewrite any that fall outside the range.
 
@@ -189,16 +193,20 @@ Hi [first name],
 Naomi | Omiflow | omiflow.co.uk
 
 EMAIL 1 — 65 to 80 words total (count everything including signature):
-The specific moment a caller is lost — tied to this business type. Vivid and real. Demo link. One warm close.
+The specific moment a caller is lost — vivid, tied to this business type. Then one sentence explaining what the demo is and what it does — e.g. "I put together a live AI voicemail demo built specifically for [business name] — it shows how missed calls could be answered and handled automatically." Then the link. One warm close.
+<a href="[DEMO_LINK_PLACEHOLDER]">Hear how it works</a>
 
 EMAIL 2 — 55 to 70 words:
-One specific operational result from a similar business. Include a real number ("recovered 11 enquiries in their first month", "three new bookings came in overnight within the first week"). Lead into: <a href="[DEMO_LINK_PLACEHOLDER]">Hear a live example</a>
+One specific operational result from a similar business type. Include a real number. Then: "Demo is still live if you want to hear it:" then the link.
+<a href="[DEMO_LINK_PLACEHOLDER]">Hear a live example</a>
 
 EMAIL 3 — 55 to 70 words:
-The cost per missed call for this business type. Give a number. Make it grounded. Lead into: <a href="[DEMO_LINK_PLACEHOLDER]">Demo still here</a>
+The cost per missed call for this business type. Give a number. Then briefly reference the demo as a way to see it in action.
+<a href="[DEMO_LINK_PLACEHOLDER]">Demo still here</a>
 
 EMAIL 4 — 45 to 60 words:
-Warm, no pressure, genuine final. Lead into: <a href="[DEMO_LINK_PLACEHOLDER]">Demo is still live</a>
+Warm, no pressure, genuine final. One honest sentence. Then: "The demo is still live — worth 30 seconds."
+<a href="[DEMO_LINK_PLACEHOLDER]">Demo is still live</a>
 
 Count every word including signature. Rewrite any outside range.
 
