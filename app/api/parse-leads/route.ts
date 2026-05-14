@@ -1,73 +1,65 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { parseXlsxBuffer, parseCsvString } from '@/lib/parse-leads'
-import type { RawLead, CleanResult, CleanedLead, RemovedLead } from '@/lib/types'
-import { randomUUID } from 'crypto'
+import { generateWithClaude } from '@/lib/claude'
+import { deployToNetlify } from '@/lib/netlify-deploy'
+import { buildWebsiteDemo } from '@/lib/demo-builders/website'
+import { buildVoicemailDemo } from '@/lib/demo-builders/voicemail'
+import type { GenerateLeadRequest, GenerateLeadResponse, GeneratedLead } from '@/lib/types'
 
-export const maxDuration = 30
+export const maxDuration = 300
 
-const PERSONAL_DOMAINS = new Set([
-  'gmail.com','googlemail.com','yahoo.com','yahoo.co.uk','yahoo.fr',
-  'hotmail.com','hotmail.co.uk','outlook.com','outlook.co.uk',
-  'live.com','icloud.com','me.com','mac.com','aol.com','protonmail.com','proton.me',
-])
-
-function isValidEmail(e: string): boolean {
-  return /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(e.trim())
-}
-
-export async function POST(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<NextResponse<GenerateLeadResponse>> {
   try {
-    const formData = await req.formData()
-    const file = formData.get('file') as File | null
+    const body = await req.json() as GenerateLeadRequest
+    const { lead, campaign, vapiPublicKey, vapiAssistantId } = body
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+    if (!lead?.email) {
+      return NextResponse.json({ success: false, error: 'Missing lead data' }, { status: 400 })
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const name = file.name.toLowerCase()
+    // Step 1 — Claude researches + writes 4 emails
+    const generated = await generateWithClaude(lead, campaign)
 
-    let raw: RawLead[] = []
-    if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
-      raw = parseXlsxBuffer(buffer)
-    } else if (name.endsWith('.csv')) {
-      raw = parseCsvString(buffer.toString('utf-8'))
-    } else {
-      return NextResponse.json({ error: 'Unsupported file type. Use CSV or XLSX.' }, { status: 400 })
+    // Step 2 — Build demo HTML server-side
+    const demoHtml = campaign === 'vm'
+      ? buildVoicemailDemo(lead, vapiPublicKey || '', vapiAssistantId || '')
+      : buildWebsiteDemo(lead, generated.niche, generated.template)
+
+    // Step 3 — Deploy demo. Hard fail if deployment cannot be verified.
+    const deploy = await deployToNetlify(demoHtml, lead.business_name)
+
+    if (!deploy.success) {
+      // Do NOT generate a lead with a broken demo link.
+      // Return the exact error so the UI can show it.
+      return NextResponse.json({
+        success: false,
+        error: `Demo deploy failed: ${deploy.error}`,
+      }, { status: 422 })
     }
 
-    // Clean leads
-    const clean: CleanedLead[] = []
-    const removed: RemovedLead[] = []
-    const seen = new Set<string>()
-    const stats = { total: raw.length, kept: 0, noEmail: 0, duplicates: 0 }
+    // Step 4 — Inject verified HTTPS URL into anchor hrefs only
+    // Claude writes: <a href="[DEMO_LINK_PLACEHOLDER]">visible text</a>
+    // We replace the placeholder in href — anchor text stays exactly as written
+    const demoUrl = deploy.url
+    const emails = generated.emails.map(e => ({
+      ...e,
+      body: e.body.replace(/\[DEMO_LINK_PLACEHOLDER\]/g, demoUrl),
+    }))
 
-    for (const lead of raw) {
-      const email = lead.email?.trim().toLowerCase() || ''
-
-      if (!email || !isValidEmail(email)) {
-        stats.noEmail++
-        removed.push({ ...lead, _reason: email ? `Invalid email: ${email}` : 'No email found' })
-        continue
-      }
-
-      if (seen.has(email)) {
-        stats.duplicates++
-        removed.push({ ...lead, _reason: `Duplicate: ${email}` })
-        continue
-      }
-
-      seen.add(email)
-      clean.push({ ...lead, email, _id: randomUUID() })
+    const result: GeneratedLead = {
+      lead,
+      niche: generated.niche,
+      template: generated.template,
+      emails,
+      demoHtml,
+      demoUrl,
+      reviewStatus: 'pending',
     }
 
-    stats.kept = clean.length
-
-    const result: CleanResult = { clean, removed, stats }
-    return NextResponse.json(result)
+    return NextResponse.json({ success: true, result })
 
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('[Generate] Error:', message)
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }
