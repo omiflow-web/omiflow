@@ -1920,7 +1920,7 @@ function getNicheContent(niche: string, city: string): NicheContent {
     tagline: `Professional services in ${city}`, cta: 'Get in Touch',
     trust: ['Free consultation','Fully insured','Locally trusted','5 star reviews'],
     stats: [{n:'500+',l:'Happy clients'},{n:'4.9',l:'Google rating'},{n:'10+',l:'Years experience'}],
-    services: [{t:'Core Service',d:'Professional service delivered with expertise and care.'},{t:'Consultation',d:'We understand your needs.'},{t:'Ongoing Support',d:'We're here after the job is done.'}],
+    services: [{t:'Core Service',d:'Professional service delivered with expertise and care.'},{t:'Consultation',d:'We understand your needs.'},{t:'Ongoing Support',d:'We are here after the job is done.'}],
     process: [{t:'Get in touch',d:'Call or message.'},{t:'Consultation',d:'We listen.'},{t:'We work',d:'Professional and reliable.'},{t:'Done right',d:'We follow up.'}],
     reviews: [{t:'Exceptional service.',a:`Satisfied client, ${city}`},{t:'Brilliant results.',a:`Happy customer, ${city}`},{t:'Highly recommended.',a:`Returning client, ${city}`}],
     about: `We are dedicated professionals serving ${city}.`,
