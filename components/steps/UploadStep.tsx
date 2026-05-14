@@ -28,10 +28,29 @@ export function UploadStep({ campaign, onCampaignChange, onLeadsParsed }: Props)
     try {
       const fd = new FormData()
       fd.append('file', file)
+
       const resp = await fetch('/api/parse-leads', { method: 'POST', body: fd })
-      const data = await resp.json()
-      if (!resp.ok) throw new Error(data.error || 'Parse failed')
-      onLeadsParsed(data as CleanResult)
+
+      // Always read as text first — avoid crashing on non-JSON server errors
+      const text = await resp.text()
+      let data: Record<string, unknown>
+
+      try {
+        data = JSON.parse(text)
+      } catch (_) {
+        throw new Error(
+          resp.ok
+            ? 'Unexpected server response — please try again'
+            : `Server error ${resp.status}: ${text.slice(0, 200)}`
+        )
+      }
+
+      if (!resp.ok) {
+        throw new Error(String(data.error) || `Server error ${resp.status}`)
+      }
+
+      onLeadsParsed(data as unknown as CleanResult)
+
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -49,16 +68,14 @@ export function UploadStep({ campaign, onCampaignChange, onLeadsParsed }: Props)
       {/* Campaign selector */}
       <div className="grid grid-cols-2 gap-3">
         {([
-          { id: 'web', icon: '🌐', title: 'Website Design', sub: 'UK niches — deploys a website demo per lead' },
-          { id: 'vm', icon: '📞', title: 'AI Voicemail', sub: 'US businesses — deploys a Vapi demo per lead' },
-        ] as const).map(({ id, icon, title, sub }) => (
+          { id: 'web' as const, icon: '🌐', title: 'Website Design', sub: 'UK niches — deploys a website demo per lead' },
+          { id: 'vm' as const, icon: '📞', title: 'AI Voicemail', sub: 'US businesses — deploys a Vapi demo per lead' },
+        ]).map(({ id, icon, title, sub }) => (
           <button
             key={id}
             onClick={() => onCampaignChange(id)}
             className={`p-4 rounded-xl border text-left transition-all ${
-              campaign === id
-                ? 'border-acc bg-acc/10'
-                : 'border-bor bg-sur hover:border-acc/50'
+              campaign === id ? 'border-acc bg-acc/10' : 'border-bor bg-sur hover:border-acc/50'
             }`}
           >
             <div className="text-2xl mb-2">{icon}</div>
@@ -72,7 +89,12 @@ export function UploadStep({ campaign, onCampaignChange, onLeadsParsed }: Props)
       <div
         onDragOver={e => { e.preventDefault(); setDragging(true) }}
         onDragLeave={() => setDragging(false)}
-        onDrop={e => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f) }}
+        onDrop={e => {
+          e.preventDefault()
+          setDragging(false)
+          const f = e.dataTransfer.files[0]
+          if (f) handleFile(f)
+        }}
         onClick={() => fileRef.current?.click()}
         className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
           dragging ? 'border-acc bg-acc/5' : 'border-bor hover:border-acc/50 bg-sur'
@@ -103,15 +125,15 @@ export function UploadStep({ campaign, onCampaignChange, onLeadsParsed }: Props)
         <div className="bg-red/10 border border-red/30 rounded-lg p-3 text-red text-sm">{error}</div>
       )}
 
-      {/* Info */}
+      {/* Required keys info */}
       <div className="bg-sur2 rounded-lg p-4 text-xs text-mut space-y-1">
         <p className="text-txt font-semibold text-sm mb-2">Environment variables required</p>
         <p><code className="text-acc">ANTHROPIC_API_KEY</code> — Claude API key (sk-ant-...)</p>
-        <p><code className="text-acc">NETLIFY_TOKEN</code> — Personal access token from netlify.com → User Settings → Access tokens</p>
+        <p><code className="text-acc">NETLIFY_TOKEN</code> — from netlify.com → User Settings → Access tokens</p>
         {campaign === 'vm' && (
           <>
-            <p><code className="text-acc">VAPI_PUBLIC_KEY</code> — From your Vapi dashboard</p>
-            <p><code className="text-acc">VAPI_ASSISTANT_ID</code> — Assistant UUID from Vapi</p>
+            <p><code className="text-acc">NEXT_PUBLIC_VAPI_PUBLIC_KEY</code> — from your Vapi dashboard</p>
+            <p><code className="text-acc">NEXT_PUBLIC_VAPI_ASSISTANT_ID</code> — assistant UUID from Vapi</p>
           </>
         )}
         <p className="text-mut/60 mt-2">Set these in Vercel → Project Settings → Environment Variables</p>
