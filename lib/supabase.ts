@@ -1,13 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 
-if (!process.env.SUPABASE_URL) throw new Error('SUPABASE_URL is not set')
-if (!process.env.SUPABASE_SERVICE_ROLE_KEY) throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set')
+// Lazy client — does not throw at module load time
+// Routes check env vars themselves and give readable errors
+function getClient() {
+  const url = process.env.SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error(`Supabase env vars missing — SUPABASE_URL: ${!!url}, SUPABASE_SERVICE_ROLE_KEY: ${!!key}`)
+  }
+  return createClient(url, key, { auth: { persistSession: false } })
+}
 
-export const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  { auth: { persistSession: false } }
-)
+export const supabase = {
+  from: (table: string) => getClient().from(table)
+}
 
 export interface LeadRow {
   id: string
