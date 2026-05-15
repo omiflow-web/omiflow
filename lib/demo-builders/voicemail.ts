@@ -174,9 +174,11 @@ hr{border:none;border-top:1px solid #ede8e0;margin:24px 0}
         console.log('[Vapi] Public key present:', VK.length > 0);
         console.log('[Vapi] Assistant ID present:', AID.length > 0);
         console.log('[Vapi] Business name:', FN);
+        console.log('[Vapi] Key prefix:', VK.slice(0,8), '| Assistant:', AID);
         sdk = window.vapiSDK.run({
           apiKey: VK,
           assistant: AID,
+          assistantOverrides: { variableValues: { firmName: FN } },
           config: { position:'bottom-right', offset:'-9999px -9999px' }
         });
         sdk.on('call-start', function(){ ui('active'); });
@@ -216,8 +218,8 @@ hr{border:none;border-top:1px solid #ede8e0;margin:24px 0}
       initSDK(function(err){
         if(err){ ui('error',err.message); return; }
         try{
-          console.log('[Vapi] Calling start() with assistant:', AID, 'variableValues:', {firmName:FN});
-          var p = sdk.start(AID, { variableValues:{ firmName:FN } });
+          console.log('[Vapi] Calling start() | assistant:', AID, '| key prefix:', VK.slice(0,8));
+          var p = sdk.start();
           if(p&&typeof p.catch==='function'){
             p.catch(function(e){
               var m=(e&&(e.message||String(e)))||'';
