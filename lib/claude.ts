@@ -130,7 +130,7 @@ Count every word including signature. Rewrite any that fall outside the range.
 OUTPUT: Raw JSON only. Nothing before or after.
 
 {"niche":"precise niche e.g. independent Caribbean restaurant","website_found":"url or empty","template":1,"emails":[{"day":1,"subject":"6 words max, specific to their situation","body":"full email with HTML anchor"},{"day":4,"subject":"","body":""},{"day":10,"subject":"","body":""},{"day":21,"subject":"","body":""}]}
-template: 1=dental/physio/salon/estate agent, 2=trades/kitchen/builder/roofer, 3=photographer/tattoo/videographer, 4=solicitor/financial/mortgage, 5=medspa/aesthetics`
+template: 1=dental/physio/salon/estate agent/gym/optician/childcare/IT/driving/pharmacy, 2=trades/builder/mechanic/cleaning/removal/locksmith/window cleaning, 3=photographer/tattoo/videographer/florist/interior designer, 4=solicitor/accountant/financial/mortgage, 5=medspa/aesthetics/cosmetic clinic`
 }
 
 // ─────────────────────────────────────────────
