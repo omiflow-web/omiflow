@@ -49,6 +49,7 @@ const TEMPLATE_PRO_SERVICES = `<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+.rv,.rv.d1,.rv.d2,.rv.d3,.rv.d4{opacity:1!important;transform:none!important;transition:none!important}
 :root{
   --p:#1a3a5c;
   --a:#2563eb;
@@ -215,7 +216,7 @@ footer{background:var(--text);padding:52px 80px 28px}
 
 /* ── REVEAL ANIMATIONS ───────────────────────────────────────────────── */
 .rv{opacity:1;transform:none}
-.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}.d4{transition-delay:.28s}
+.d1,.d2,.d3,.d4{}
 
 /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
 @media(max-width:900px){
@@ -420,6 +421,7 @@ const TEMPLATE_TRADES = `<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <style>
+.rv,.rv.d1,.rv.d2,.rv.d3,.rv.d4{opacity:1!important;transform:none!important;transition:none!important}
 /* PIPELINE TEMPLATE — TRADES */
 :root {
   --p: #1c1c1a;
@@ -499,7 +501,7 @@ nav.stuck{background:rgba(17,17,16,.96);backdrop-filter:blur(12px);box-shadow:0 
 
 /* Reveal */
 .rv{opacity:1;transform:none}
-.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+.d1,.d2,.d3,.d4{}
 
 /* PROJECTS GRID */
 .projects-section{background:var(--dark);padding:96px 80px}
@@ -786,6 +788,7 @@ const TEMPLATE_PHOTOGRAPHY = `<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+.rv,.rv.d1,.rv.d2,.rv.d3,.rv.d4{opacity:1!important;transform:none!important;transition:none!important}
 :root{
   --p:#1a1510;
   --a:#b8935a;
@@ -1130,7 +1133,7 @@ footer{background:var(--text);padding:48px 80px 24px}
   <div class="reviews-grid">
     <div class="r-card rv d1"><div class="r-stars"><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span></div><div class="r-text">"{{REVIEW_1_TEXT}}"</div><div class="r-author">— {{REVIEW_1_AUTHOR}}</div></div>
     <div class="r-card rv d2"><div class="r-stars"><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span></div><div class="r-text">"{{REVIEW_2_TEXT}}"</div><div class="r-author">— {{REVIEW_2_AUTHOR}}</div></div>
-    <div class="r-card rv d3"><div class="r-stars"><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span></div><div class="r-text">"{{REVIEW_3_TEXT_START}} from now these will still feel alive."</div><div class="r-author">— {{REVIEW_3_AUTHOR}}</div></div>
+    <div class="r-card rv d3"><div class="r-stars"><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span><span class="r-star">&#9733;</span></div><div class="r-text">"{{REVIEW_3_TEXT}} from now these will still feel alive."</div><div class="r-author">— {{REVIEW_3_AUTHOR}}</div></div>
   </div>
 </section>
 
@@ -1198,6 +1201,7 @@ const TEMPLATE_SOLICITORS = `<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+.rv,.rv.d1,.rv.d2,.rv.d3,.rv.d4{opacity:1!important;transform:none!important;transition:none!important}
 :root{
   --p:#2563eb;
   --a:#1e2d4a;
@@ -1346,7 +1350,7 @@ footer{background:var(--slate);padding:48px 80px 24px}
 .fcredit a{color:#c8f155;border-bottom:1px solid rgba(200,241,85,.3);padding-bottom:1px}
 
 .rv{opacity:1;transform:none}
-.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}.d4{transition-delay:.28s}
+.d1,.d2,.d3,.d4{}
 
 @media(max-width:900px){
   nav{padding:0 24px}
@@ -1538,6 +1542,7 @@ const TEMPLATE_MEDSPAS = `<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
+.rv,.rv.d1,.rv.d2,.rv.d3,.rv.d4{opacity:1!important;transform:none!important;transition:none!important}
 :root{
   --p:#8b5cf6;
   --a:#b8935a;
@@ -1706,7 +1711,7 @@ footer{background:var(--dark);padding:48px 80px 24px}
 
 /* ── REVEAL ───────────────────────────────────────────────────────────── */
 .rv{opacity:1;transform:none}
-.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+.d1,.d2,.d3,.d4{}
 
 /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
 @media(max-width:900px){
@@ -1938,6 +1943,71 @@ function getNicheContent(niche: string, city: string): NicheContent {
 
   if (/spa|aesthet|botox|filler|laser|cosmetic|skin/.test(n)) return { ...defaults, heroH1:'Natural results, not a procedure', heroSub:`Medical-grade aesthetics in ${city}`, cta:'Book Free Consultation', typewriter:[`Medical aesthetics in ${city}`,'Natural results, always'] }
 
+
+  // ── GYM / FITNESS / PERSONAL TRAINER ───────────────────────────────
+  if (/gym|fitness|personal.train|pt studio|yoga|pilates|crossfit|bootcamp|spinning|cycling.studio/.test(n))
+    return { ...defaults, heroH1: 'Strong bodies. Stronger habits.', heroSub: `Expert fitness coaching in ${city}`, heroSubA: `Personal training in ${city}`, heroSubB: 'Every level welcome. Every goal taken seriously.', tagline: `Fitness studio in ${city}`, cta: 'Book a Free Session', trust: ['All fitness levels','No joining fee','Expert coaches','Flexible classes'], stats: [{n:'1,200+',l:'Members trained'},{n:'4.9',l:'Google rating'},{n:'8+',l:`Years in ${city}`}], services: [{t:'Personal Training',d:'One-to-one sessions built entirely around your goals and schedule.'},{t:'Group Classes',d:'High-energy sessions for all levels. Never intimidating, always effective.'},{t:'Nutrition Coaching',d:'Practical plans that fit real life. No crash diets.'}], process: [{t:'Free assessment',d:'We find out where you are now.'},{t:'Tailored plan',d:'Built specifically for your body and goals.'},{t:'Weekly sessions',d:'Structured, progressive and tracked.'},{t:'Real results',d:'We measure, adjust and celebrate.'}], reviews: [{t:'Lost 18kg in four months. The coaching here is genuinely different.',a:`Member, ${city}`},{t:'Finally a gym where you feel looked after from day one.',a:`Google review, ${city}`},{t:'Personal training here changed how I think about fitness.',a:`Returning member, ${city}`}], about: `${city} residents have been training with us since we opened our doors.`, typewriter: [`Personal training in ${city}`, 'Real results for real people'] }
+
+  // ── ESTATE AGENT / LETTINGS / PROPERTY MANAGEMENT ───────────────────
+  if (/estate.agent|letting|letting.agent|property.manag|property.sale|realtor|realty|house.sale/.test(n))
+    return { ...defaults, heroH1: 'Your property in expert hands.', heroSub: `Trusted estate agents in ${city} — buying, selling and letting done properly`, heroSubA: `Estate agents in ${city}`, heroSubB: 'No sale, no fee. Real local knowledge.', tagline: `Estate agents in ${city}`, cta: 'Book a Valuation', trust: ['Free valuation','No sale no fee','Fully regulated','Local specialists'], stats: [{n:'850+',l:'Properties sold'},{n:'4.8',l:'Google rating'},{n:'12+',l:`Years in ${city}`}], services: [{t:'Residential Sales',d:'Expert marketing and honest pricing to get your home sold for the right figure.'},{t:'Lettings',d:'Full tenant-find and managed lettings. You own, we handle the rest.'},{t:'Property Management',d:'24/7 support, compliance, maintenance co-ordination and monthly reporting.'}], process: [{t:'Free valuation',d:'Honest, comparable-led pricing.'},{t:'Professional marketing',d:'Photography, floor plans, portal listing.'},{t:'Accompanied viewings',d:'We show buyers around so you do not have to.'},{t:'Completion',d:'Guided from offer accepted to keys handed over.'}], reviews: [{t:'Sold in under two weeks at asking price. Could not have asked for more.',a:`Vendor, ${city}`},{t:'Our rental is always filled and managed without us lifting a finger.',a:`Landlord, ${city}`},{t:'Straightforward, honest and always available.',a:`Buyer, ${city}`}], about: `${city} families and landlords have trusted us with their properties for over a decade.`, typewriter: [`Estate agents in ${city}`, 'Selling, letting and managing locally'] }
+
+  // ── ACCOUNTANT / BOOKKEEPER / TAX ───────────────────────────────────
+  if (/account|bookkeep|tax.advis|tax.consult|chartered.account|payroll|vat.return|self.assess/.test(n))
+    return { ...defaults, heroH1: 'Numbers handled. Tax sorted.', heroSub: `Qualified accountants in ${city} — fixed fees, no surprises`, heroSubA: `Accountants in ${city}`, heroSubB: 'Proactive advice, not just compliance.', tagline: `Accountants in ${city}`, cta: 'Book a Free Call', trust: ['Fully qualified','Fixed fees','Proactive advice','HMRC compliant'], stats: [{n:'400+',l:'Clients supported'},{n:'4.9',l:'Google rating'},{n:'15+',l:`Years in ${city}`}], services: [{t:'Tax Returns',d:'Self-assessment, corporation tax and VAT returns filed accurately and on time.'},{t:'Bookkeeping',d:'Clean books every month so you always know where your business stands.'},{t:'Payroll & Compliance',d:'Fully managed payroll, RTI submissions and auto-enrolment handled.'}], process: [{t:'Free consultation',d:'We review your situation and tell you exactly what you need.'},{t:'We review your books',d:'Identify savings and correct any issues.'},{t:'File on your behalf',d:'HMRC submissions handled end-to-end.'},{t:'Ongoing support',d:'Monthly check-ins and proactive planning.'}], reviews: [{t:'Saved over £8,000 in our first year. Genuinely proactive, not just form-fillers.',a:`Business owner, ${city}`},{t:'Fixed fee meant no surprises. Always available when we needed advice.',a:`Sole trader, ${city}`},{t:'Switched from our previous accountant and wish we had done it years ago.',a:`Director, ${city}`}], about: `${city} businesses and individuals rely on us for honest, proactive financial advice.`, typewriter: [`Accountants in ${city}`, 'Proactive, not just compliant'] }
+
+  // ── CLEANING SERVICE ─────────────────────────────────────────────────
+  if (/clean|domestic.clean|commercial.clean|end.of.tenanc|deep.clean|office.clean|carpet.clean/.test(n))
+    return { ...defaults, heroH1: 'Spotless. Every time.', heroSub: `Professional cleaning services across ${city}`, heroSubA: `Cleaning services in ${city}`, heroSubB: 'Reliable. Insured. Same team every visit.', tagline: `Cleaning services in ${city}`, cta: 'Get a Free Quote', trust: ['Fully insured','DBS checked','Same cleaner','Supplies included'], stats: [{n:'600+',l:'Regular clients'},{n:'4.9',l:'Google rating'},{n:'7+',l:`Years in ${city}`}], services: [{t:'Regular Domestic Cleaning',d:'Weekly or fortnightly visits from a consistent cleaner who knows your home.'},{t:'Deep Clean',d:'Top-to-bottom intensive clean. Ideal for move-ins, post-renovation or one-offs.'},{t:'End of Tenancy',d:'Landlord and agent-approved cleans. Deposit protection guaranteed.'}], process: [{t:'Book online',d:'Pick your date. Takes two minutes.'},{t:'We arrive on time',d:'Same team, same standard, every visit.'},{t:'Systematic clean',d:'Every area checked before we leave.'},{t:'Feedback welcome',d:'We follow up to make sure you are happy.'}], reviews: [{t:'Had the same cleaner for three years. Absolute peace of mind every week.',a:`Regular client, ${city}`},{t:'End of tenancy clean meant we got every penny of our deposit back.',a:`Tenant, ${city}`},{t:'Professional, quick, trustworthy. Have recommended to everyone.',a:`Homeowner, ${city}`}], about: `${city} homes and offices have relied on our cleaning teams for years.`, typewriter: [`Cleaning services in ${city}`, 'Reliable, insured and trusted'] }
+
+  // ── CAR MECHANIC / GARAGE / MOT ─────────────────────────────────────
+  if (/mechanic|garage|mot|auto.repair|car.repair|bodywork|car.service|tyre|exhaust|brake/.test(n))
+    return { ...defaults, heroH1: 'Back on the road. Fast.', heroSub: `Qualified mechanics and MOT testing in ${city}`, heroSubA: `Car mechanics in ${city}`, heroSubB: 'Same-day diagnostics. Fixed prices.', tagline: `Auto repair in ${city}`, cta: 'Book Your Car In', trust: ['Same-day quotes','Parts guaranteed','Fully qualified','Free collection'], stats: [{n:'3,000+',l:'Vehicles repaired'},{n:'4.8',l:'Google rating'},{n:'10+',l:`Years in ${city}`}], services: [{t:'MOT & Full Service',d:'Fast, affordable MOT testing and full vehicle health checks.'},{t:'Diagnostics & Repairs',d:'Computer diagnostics to find the fault fast. No guesswork, no inflated bills.'},{t:'Tyres, Brakes & Exhausts',d:'Same-day fitting with quality parts and a written guarantee.'}], process: [{t:'Book in',d:'Call or book online for your slot.'},{t:'Diagnostics',d:'We identify the exact fault with full transparency.'},{t:'Written quote',d:'Fixed price agreed before any work begins.'},{t:'Done and tested',d:'Road-tested before you collect.'}], reviews: [{t:'Fixed my car the same day for less than the dealer quoted. Will never go anywhere else.',a:`Customer, ${city}`},{t:'Honest garage. They told me what did not need doing as well as what did.',a:`Google review, ${city}`},{t:'MOT passed first time. Fast, friendly and no hidden charges.',a:`Regular customer, ${city}`}], about: `${city} drivers have trusted us with their vehicles for over a decade.`, typewriter: [`Mechanics in ${city}`, 'Honest repairs, fair prices'] }
+
+  // ── OPTICIAN / OPTOMETRIST / EYE CARE ───────────────────────────────
+  if (/optician|optometrist|eye.test|eye.care|glasses|contact.lens|vision|spectacles|eyewear/.test(n))
+    return { ...defaults, heroH1: 'See more clearly. From day one.', heroSub: `Independent opticians in ${city} — expert eye care and a huge frame selection`, heroSubA: `Opticians in ${city}`, heroSubB: 'New patients always welcome. NHS accepted.', tagline: `Opticians in ${city}`, cta: 'Book an Eye Test', trust: ['NHS accepted','Same-day appointments','Expert dispensing','Kids welcome'], stats: [{n:'5,000+',l:'Patients tested'},{n:'4.9',l:'Google rating'},{n:'20+',l:`Years in ${city}`}], services: [{t:'Eye Tests',d:'Comprehensive sight tests using the latest equipment. All ages welcome.'},{t:'Glasses & Frames',d:'Hundreds of frames in-store. Independent brands you will not find on the high street.'},{t:'Contact Lenses',d:'Trial, fitting and supply for all types of contact lenses.'}], process: [{t:'Book your test',d:'Same-week appointments usually available.'},{t:'Full examination',d:'20-minute comprehensive test by a qualified optometrist.'},{t:'Choose your frames',d:'No pressure. Expert guidance on fit and lenses.'},{t:'Collection or dispatch',d:'Glasses ready in days, not weeks.'}], reviews: [{t:'Been coming here for ten years. Always thorough, always honest.',a:`Patient, ${city}`},{t:'Found frames I actually love for the first time. Brilliant selection.',a:`Google review, ${city}`},{t:'My children look forward to their eye tests here. Incredible with kids.',a:`Parent, ${city}`}], about: `${city} families have trusted their vision to our optometrists for two decades.`, typewriter: [`Opticians in ${city}`, 'Expert eye care for all the family'] }
+
+  // ── FLORIST / FLOWERS / FLORAL DESIGN ───────────────────────────────
+  if (/florist|flower|floral.design|wedding.flower|bouquet|arrangement|plant.shop/.test(n))
+    return { ...defaults, heroH1: 'Flowers that say exactly the right thing.', heroSub: `Independent florist in ${city} — seasonal flowers, same-day delivery`, heroSubA: `Florist in ${city}`, heroSubB: 'Fresh from market. Designed with care.', tagline: `Florist in ${city}`, cta: 'Order Today', trust: ['Same-day delivery','Fresh from market','Weddings welcome','Custom designs'], stats: [{n:'2,000+',l:'Bouquets made'},{n:'4.9',l:'Google rating'},{n:'6+',l:`Years in ${city}`}], services: [{t:'Bouquets & Arrangements',d:'Hand-tied bouquets and statement arrangements for any occasion.'},{t:'Wedding Flowers',d:'Bridal bouquets, table centres, ceremony arch and buttonholes. Full consultation included.'},{t:'Corporate & Events',d:'Weekly office flowers, event styling and branded displays.'}], process: [{t:'Browse or call',d:'Tell us the occasion, budget and your style.'},{t:'We design',d:'Every arrangement made fresh on the day.'},{t:'Deliver or collect',d:'Same-day delivery across the local area.'},{t:'Smile guaranteed',d:'If it is not right, we make it right.'}], reviews: [{t:'Wedding flowers were beyond what I imagined. Every single detail perfect.',a:`Bride, ${city}`},{t:'Order flowers every Friday. Always fresh, always beautiful.',a:`Regular customer, ${city}`},{t:'Sent to my mum for her birthday. She cried. Enough said.',a:`Customer, ${city}`}], about: `${city} locals have chosen us for life's moments — big and small — since we opened.`, typewriter: [`Florist in ${city}`, 'Fresh, seasonal, handmade'] }
+
+  // ── CHILDCARE / NURSERY / DAYCARE ───────────────────────────────────
+  if (/nursery|childcare|daycare|preschool|day.nursery|creche|after.school|holiday.club|childmind/.test(n))
+    return { ...defaults, heroH1: 'A safe, happy place to grow.', heroSub: `Ofsted-registered childcare in ${city} — nurturing children since 2010`, heroSubA: `Nursery in ${city}`, heroSubB: 'Qualified staff. Funded hours accepted.', tagline: `Childcare in ${city}`, cta: 'Book a Visit', trust: ['Ofsted registered','Qualified staff','Funded hours','Healthy meals'], stats: [{n:'120+',l:'Children in our care'},{n:'4.9',l:'Parent rating'},{n:'12+',l:`Years in ${city}`}], services: [{t:'Full Day Care',d:'Flexible hours from 7:30am to 6pm. Nutritious hot meals and snacks included.'},{t:'Before & After School',d:'Morning drop-off and afternoon collection from local primary schools.'},{t:'Holiday Club',d:'Themed activities, trips and creative play during every school holiday.'}], process: [{t:'Visit us',d:'Settle your child in at their own pace.'},{t:'Register',d:'Simple online registration. Funding confirmed.'},{t:'Settle in',d:'Our settling process puts children and parents at ease.'},{t:'Thrive',d:'Regular updates and a two-way app so you are always in the picture.'}], reviews: [{t:'My daughter runs in every morning. That tells you everything you need to know.',a:`Parent, ${city}`},{t:'Setting is wonderful, staff are warm and genuinely invested in every child.',a:`Google review, ${city}`},{t:'The holiday club is brilliant. My son never wants it to end.',a:`Parent, ${city}`}], about: `${city} families trust us to care for their children the way they would themselves.`, typewriter: [`Nursery in ${city}`, 'Nurturing, safe and joyful'] }
+
+  // ── DOG GROOMING / PET SERVICES / VET ───────────────────────────────
+  if (/dog.groom|pet.groom|grooming.salon|vet|veterinary|animal.clinic|pet.care|dog.walk|pet.sit/.test(n))
+    return { ...defaults, heroH1: 'Happy pets. Happy owners.', heroSub: `Professional pet grooming and care in ${city}`, heroSubA: `Dog groomers in ${city}`, heroSubB: 'All breeds welcome. Calm, caring approach.', tagline: `Pet services in ${city}`, cta: 'Book an Appointment', trust: ['Qualified groomers','All breeds welcome','Gentle approach','Walk-ins welcome'], stats: [{n:'1,500+',l:'Happy pets'},{n:'4.9',l:'Google rating'},{n:'5+',l:`Years in ${city}`}], services: [{t:'Full Groom',d:'Bath, blow-dry, cut and style tailored to your dog's breed and coat type.'},{t:'Bath & Dry',d:'Perfect for in between grooms. Includes nail trim and ear clean.'},{t:'Puppy Package',d:'First groom designed to make young dogs love the experience from day one.'}], process: [{t:'Book online',d:'Pick a slot that suits you.'},{t:'Drop off',d:'We chat about your dog and what you want.'},{t:'Full groom',d:'Calm, unhurried and professional.'},{t:'Collect',d:'Your dog looking and smelling brilliant.'}], reviews: [{t:'My anxious rescue dog is completely relaxed with them. Genuinely incredible.',a:`Dog owner, ${city}`},{t:'Best groom my spaniel has ever had. Fur has never looked so good.',a:`Google review, ${city}`},{t:'My dog now gets excited when we pull up outside. Says everything.',a:`Regular customer, ${city}`}], about: `${city} pet owners bring their dogs to us because we treat every animal as our own.`, typewriter: [`Dog groomers in ${city}`, 'All breeds, gentle approach'] }
+
+  // ── IT SUPPORT / COMPUTER REPAIR / TECH ─────────────────────────────
+  if (/it.support|computer.repair|tech.support|it.service|network|cyber|web.design|software|data.recover|managed.it/.test(n))
+    return { ...defaults, heroH1: 'Tech problems fixed. Today.', heroSub: `IT support and computer repairs in ${city} — no fix, no fee`, heroSubA: `IT support in ${city}`, heroSubB: 'Remote and on-site. Business and home.', tagline: `IT support in ${city}`, cta: 'Get Help Now', trust: ['No fix no fee','Remote & on-site','Business & home','Data safe guaranteed'], stats: [{n:'800+',l:'Issues resolved'},{n:'4.8',l:'Google rating'},{n:'9+',l:`Years in ${city}`}], services: [{t:'Computer Repair',d:'Slow machines, virus removal, hardware failures and screen replacements. Fast turnaround.'},{t:'Network & Wi-Fi Setup',d:'Home and office networks configured securely. Remote working made easy.'},{t:'Data Recovery',d:'Files recovered from failed drives, corrupted systems and accidental deletions.'}], process: [{t:'Describe the problem',d:'Call, email or drop in. We listen.'},{t:'Diagnose',d:'We identify the issue before quoting anything.'},{t:'Fixed price repair',d:'Agreed upfront. No surprises.'},{t:'Tested and returned',d:'We do not close a job until it is working.'}], reviews: [{t:'Thought my laptop was finished. Had it back working in two hours.',a:`Customer, ${city}`},{t:'Set up our whole office network remotely. Brilliant service.',a:`Business owner, ${city}`},{t:'Recovered seven years of family photos. Cannot thank them enough.',a:`Google review, ${city}`}], about: `${city} homes and businesses rely on us for fast, honest technology support.`, typewriter: [`IT support in ${city}`, 'Fast fixes, honest pricing'] }
+
+  // ── REMOVAL / MAN AND VAN / MOVING ──────────────────────────────────
+  if (/removal|man.and.van|moving.company|house.move|office.move|reloc|storage/.test(n))
+    return { ...defaults, heroH1: 'Your move, handled properly.', heroSub: `Professional removal company in ${city} — fixed quotes, no hidden costs`, heroSubA: `Removal company in ${city}`, heroSubB: 'Fully insured. Weekend moves available.', tagline: `Removals in ${city}`, cta: 'Get a Free Quote', trust: ['Fully insured','Fixed quotes','Weekend moves','Packing service'], stats: [{n:'1,800+',l:'Moves completed'},{n:'4.9',l:'Google rating'},{n:'11+',l:`Years in ${city}`}], services: [{t:'House Removals',d:'Local and national moves handled by an experienced team with the right vehicles.'},{t:'Office Relocations',d:'Minimal downtime, protected equipment and careful co-ordination.'},{t:'Packing & Storage',d:'Full or partial packing service. Secure storage available for short or long term.'}], process: [{t:'Free survey',d:'We visit or video-call to quote accurately.'},{t:'Fixed price confirmed',d:'No surprises on the day.'},{t:'Moving day',d:'Careful, systematic and efficient.'},{t:'Unpacked and done',d:'We take the packaging with us.'}], reviews: [{t:'Second move with them. Not once a scratch or a delay.',a:`Customer, ${city}`},{t:'Moved a three-bedroom house in under four hours. Incredible team.',a:`Google review, ${city}`},{t:'Fair price, reliable team, zero stress. Exactly what a removal should be.',a:`Customer, ${city}`}], about: `${city} families and businesses have trusted us with their most important possessions.`, typewriter: [`Removals in ${city}`, 'Fully insured, fixed price'] }
+
+  // ── LOCKSMITH / SECURITY ─────────────────────────────────────────────
+  if (/locksmith|lock.change|lock.out|security.install|alarm.install|key.cutting|safe/.test(n))
+    return { ...defaults, heroH1: 'Fast response. Professional solution.', heroSub: `24/7 locksmith and security services across ${city}`, heroSubA: `Locksmith in ${city}`, heroSubB: '30-minute response. No call-out fee.', tagline: `Locksmith in ${city}`, cta: 'Call Now', trust: ['24/7 call out','30 min response','No call-out fee','Fully insured'], stats: [{n:'5,000+',l:'Lockouts resolved'},{n:'4.9',l:'Google rating'},{n:'14+',l:`Years in ${city}`}], services: [{t:'Emergency Lockout',d:'Locked out of your home or car? We arrive within 30 minutes across the local area.'},{t:'Lock Changes & Upgrades',d:'British Standard locks fitted to insurance-approved specification.'},{t:'Security Assessment',d:'Free review of your home or business entry points with honest recommendations.'}], process: [{t:'Call us',d:'Available 24 hours, 7 days.'},{t:'We arrive fast',d:'Local team, 30-minute typical response.'},{t:'Assess and quote',d:'Upfront price agreed before any work.'},{t:'Job done',d:'Tested and secure before we leave.'}], reviews: [{t:'Locked out at midnight. Someone was with me in 25 minutes. Life saver.',a:`Customer, ${city}`},{t:'Upgraded our locks after a break-in nearby. Done same day, no fuss.',a:`Homeowner, ${city}`},{t:'Honest about what we needed and what we did not. Trusted them completely.',a:`Google review, ${city}`}], about: `${city} homes and businesses have relied on us for fast, trusted security solutions.`, typewriter: [`Locksmith in ${city}`, '24/7, 30-minute response'] }
+
+  // ── DRIVING INSTRUCTOR / DRIVING SCHOOL ──────────────────────────────
+  if (/driving.instructor|driving.school|driving.lesson|learn.to.drive|pass.plus|intensive.course/.test(n))
+    return { ...defaults, heroH1: 'Pass first time. Drive for life.', heroSub: `DVSA-approved driving instructor in ${city}`, heroSubA: `Driving lessons in ${city}`, heroSubB: 'Beginners to test-ready in your own time.', tagline: `Driving school in ${city}`, cta: 'Book Your First Lesson', trust: ['DVSA approved','Flexible lessons','Motorway lessons','Mock tests included'], stats: [{n:'94%',l:'First-time pass rate'},{n:'4.9',l:'Google rating'},{n:'500+',l:'Students passed'}], services: [{t:'Beginner Lessons',d:'Calm, patient instruction from the very first lesson. No experience necessary.'},{t:'Intensive Courses',d:'Pass in as little as two weeks with our structured intensive programme.'},{t:'Pass Plus & Motorway',d:'Post-test motorway driving and advanced skills for new drivers.'}], process: [{t:'Free assessment',d:'We find out your experience and set a realistic timeline.'},{t:'Tailored lesson plan',d:'Structured to get you test-ready efficiently.'},{t:'Regular lessons',d:'Consistent, progressive. Same instructor every time.'},{t:'Mock test',d:'Full test conditions before your actual test.'}], reviews: [{t:'Failed twice before. Passed first time with this instructor. Total game changer.',a:`Student, ${city}`},{t:'Calm, patient and brilliant at explaining exactly what to do.',a:`Google review, ${city}`},{t:'Did an intensive course and passed in two weeks. Could not recommend more.',a:`Student, ${city}`}], about: `${city} learners choose us for our high pass rate and genuinely patient instruction.`, typewriter: [`Driving lessons in ${city}`, 'Patient, professional, proven'] }
+
+  // ── INTERIOR DESIGN / ARCHITECT ──────────────────────────────────────
+  if (/interior.design|interior.architect|architect|space.plan|interior.decor|home.design|commercial.design/.test(n))
+    return { ...defaults, heroH1: 'Spaces designed to live in.', heroSub: `Interior design studio in ${city} — residential and commercial projects`, heroSubA: `Interior designers in ${city}`, heroSubB: 'From concept to completion.', tagline: `Interior design in ${city}`, cta: 'Book a Consultation', trust: ['Free consultation','Fixed project fees','Fully qualified','On-time delivery'], stats: [{n:'180+',l:'Projects delivered'},{n:'4.9',l:'Client rating'},{n:'10+',l:`Years designing`}], services: [{t:'Residential Design',d:'Full interior design from concept to completion. Every detail specified and managed.'},{t:'Space Planning',d:'Floor plans, 3D renders and furniture layouts to make the most of your space.'},{t:'Project Management',d:'We manage contractors, timelines and budgets so you do not have to.'}], process: [{t:'Initial consultation',d:'We listen to how you live and what you want the space to feel like.'},{t:'Concept presentation',d:'Mood boards, colour palette and layout options.'},{t:'Detailed design',d:'Full specification, product selection and drawings.'},{t:'On-site delivery',d:'We oversee every element of the build.'}], reviews: [{t:'Completely transformed our house. Could not have imagined how good it would look.',a:`Homeowner, ${city}`},{t:'The attention to detail is extraordinary. Every decision explained.',a:`Client, ${city}`},{t:'Delivered on time, on budget, exactly as designed. Remarkable.',a:`Commercial client, ${city}`}], about: `${city} homes and businesses have been transformed by our considered design process.`, typewriter: [`Interior design in ${city}`, 'Considered spaces, lasting results'] }
+
+  // ── PHARMACY / CHEMIST ───────────────────────────────────────────────
+  if (/pharmacy|chemist|dispensing|prescription|health.store/.test(n))
+    return { ...defaults, heroH1: 'Your local health team. Always here.', heroSub: `Independent pharmacy in ${city} — prescriptions, consultations and more`, heroSubA: `Pharmacy in ${city}`, heroSubB: 'NHS and private. Walk-ins welcome.', tagline: `Pharmacy in ${city}`, cta: 'Visit Us', trust: ['NHS dispensing','Private services','Travel health','Free consultations'], stats: [{n:'200+',l:'Prescriptions daily'},{n:'4.8',l:'Google rating'},{n:'18+',l:`Years in ${city}`}], services: [{t:'NHS Prescriptions',d:'Fast, accurate dispensing with free home delivery available.'},{t:'Private Consultations',d:'On-demand consultations for common conditions without the GP wait.'},{t:'Travel Health & Vaccinations',d:'Travel vaccines, malaria prevention and health advice for any destination.'}], process: [{t:'Drop in or call ahead',d:'Walk-ins always welcome.'},{t:'Consultation',d:'Private, professional and confidential.'},{t:'Dispensed or referred',d:'We ensure you get the right treatment.'},{t:'Follow-up',d:'We check in on your progress.'}], reviews: [{t:'Never had to wait long. The pharmacists know my name and my history.',a:`Regular patient, ${city}`},{t:'Travel vaccines done in a single appointment. Brilliant service.',a:`Google review, ${city}`},{t:'The team here are more helpful than any GP surgery I have used.',a:`Customer, ${city}`}], about: `${city} residents have relied on our pharmacy team for almost two decades.`, typewriter: [`Pharmacy in ${city}`, 'NHS and private, always local'] }
+
+  // ── WINDOW CLEANING / GUTTER / EXTERIOR ──────────────────────────────
+  if (/window.clean|gutter.clean|pressure.wash|render.clean|solar.panel.clean|exterior.clean/.test(n))
+    return { ...defaults, heroH1: 'Spotless from the outside in.', heroSub: `Exterior cleaning services across ${city}`, heroSubA: `Window cleaners in ${city}`, heroSubB: 'Reliable. Fully insured. No mess.', tagline: `Cleaning services in ${city}`, cta: 'Get a Free Quote', trust: ['Fully insured','No mess policy','Regular schedule','Free quote'], stats: [{n:'900+',l:'Properties cleaned'},{n:'4.9',l:'Google rating'},{n:'8+',l:`Years in ${city}`}], services: [{t:'Window Cleaning',d:'Reach-and-wash system. Streak-free, even on the highest windows.'},{t:'Gutter Clearing',d:'Checked with a camera and cleared properly. Before and after photos provided.'},{t:'Pressure Washing',d:'Driveways, patios, render and cladding. Makes a significant difference.'}], process: [{t:'Free quote',d:'We visit or assess from photos.'},{t:'Scheduled visit',d:'Regular rounds — you do not even need to be home.'},{t:'Thorough clean',d:'Professional equipment, no shortcuts.'},{t:'Evidence provided',d:'Before and after photos for gutters and larger jobs.'}], reviews: [{t:'My windows have never looked this good. Been using them monthly for two years.',a:`Homeowner, ${city}`},{t:'Gutter was blocked for years. Cleared in 40 minutes with photos to prove it.',a:`Google review, ${city}`},{t:'The driveway pressure wash made it look new. Brilliant job.',a:`Customer, ${city}`}], about: `${city} homeowners choose us for consistent, professional exterior cleaning they can trust.`, typewriter: [`Window cleaners in ${city}`, 'Reliable, insured, streak-free'] }
+
   return { ...defaults, typewriter: [`${n} in ${city}`, `Trusted by locals`] }
 }
 
@@ -1997,5 +2067,13 @@ export function buildWebsiteDemo(lead: CleanedLead, niche: string, templateId: n
     html = html.replace(/const phrases\s*=\s*\[.*?\];/s, `const phrases=${JSON.stringify(nc.typewriter)};`)
   }
 
+
+  // Debug: log all template vars to server console
+  const unreplaced = [...html.matchAll(/\{\{([A-Z0-9_]+)\}\}/g)].map(m => m[1])
+  if (unreplaced.length > 0) {
+    console.error('[website.ts] UNREPLACED VARS in', lead.business_name, ':', unreplaced)
+  } else {
+    console.log('[website.ts] All vars replaced for', lead.business_name, '| template:', templateId, '| niche:', niche)
+  }
   return html
 }
