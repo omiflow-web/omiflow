@@ -10,10 +10,9 @@ export function buildVoicemailDemo(
   const fname = (lead.name_for_emails || lead.business_name?.split(' ')[0] || 'there')
     .replace(/"/g, '&quot;')
 
-  // Escape for safe use inside JS template literals
   const bizJs = biz.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$')
-  const vkJs = (vapiPublicKey || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-  const aidJs = (vapiAssistantId || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+  const vkJs = (vapiPublicKey || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`')
+  const aidJs = (vapiAssistantId || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`')
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -25,8 +24,8 @@ export function buildVoicemailDemo(
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#111;font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:52px 20px 40px}
-/* Hide any Vapi floating button that the SDK might inject */
-#vapi-support-btn,#vapi-support-btn-container,.vapi-btn,.vapi-widget-wrapper{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+/* Hide any Vapi floating widget - we use our own button */
+[id*="vapi"],[class*="vapi-widget"],[class*="vapi-btn"]{position:fixed!important;bottom:-9999px!important;right:-9999px!important;opacity:0!important;pointer-events:none!important;visibility:hidden!important}
 .bar{position:fixed;top:0;left:0;right:0;background:#0a0a0a;border-bottom:1px solid #1f1f1f;color:#c8f155;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:8px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:100}
 .dot{width:5px;height:5px;border-radius:50%;background:#c8f155;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -38,323 +37,214 @@ h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:#1a
 .step{display:flex;gap:12px;align-items:center}
 .num{width:22px;height:22px;border-radius:50%;background:#b797ff;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .st{font-size:13px;color:#1a1916;font-weight:500;line-height:1.5}
-.btn{width:100%;padding:18px;border:none;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s,transform .15s;margin-bottom:10px;font-family:inherit;outline:none}
+.btn{width:100%;padding:18px;border:none;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s,transform .15s;margin-bottom:10px;font-family:inherit}
 .btn-idle{background:#b797ff;color:#fff}
 .btn-idle:hover{background:#a47ff5;transform:translateY(-1px)}
-.btn-loading{background:#c8b0ff;color:#fff;cursor:default}
+.btn-loading{background:#c8b0ff;color:#fff;cursor:default;pointer-events:none}
 .btn-active{background:#fc5c7c;color:#fff}
 .btn-active:hover{background:#e8446a;transform:translateY(-1px)}
 .btn-done{background:transparent;color:#7c4dcc;border:1.5px solid #d4beff}
 .btn-done:hover{background:#f4f0ff}
-.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+.spin{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-.pulse-dot{width:9px;height:9px;border-radius:50%;background:#fff;animation:pulse-a 1.4s ease infinite;flex-shrink:0}
-@keyframes pulse-a{0%{transform:scale(1);opacity:1}70%{transform:scale(1.9);opacity:0}100%{transform:scale(1);opacity:0}}
-.sub-note{font-size:11px;color:#a09890;margin-bottom:4px;min-height:16px}
-.err{display:none;background:#fff0f0;border:1px solid #fcc;border-radius:10px;padding:12px;font-size:12px;color:#c0392b;margin-top:10px;line-height:1.65;text-align:left}
-.err.show{display:block}
-.live{display:none;background:#f0ebff;border-radius:14px;padding:14px;margin-top:14px;text-align:left}
-.live.show{display:block}
-.live-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7c4dcc;margin-bottom:4px;display:flex;align-items:center;gap:6px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 1s infinite}
-.live-sub{font-size:12px;font-weight:300;color:#6b6560;line-height:1.6}
-.result{display:none;margin-top:14px;text-align:left}
-.result.show{display:block}
+.subnote{font-size:11px;color:#a09890;margin-bottom:4px;min-height:16px;text-align:center}
+.errbox{display:none;background:#fff0f0;border:1px solid #fcc;border-radius:10px;padding:12px;font-size:12px;color:#c0392b;margin-top:10px;line-height:1.65;text-align:left}
+.errbox.show{display:block}
+.livebox{display:none;background:#f0ebff;border-radius:14px;padding:14px;margin-top:14px;text-align:left}
+.livebox.show{display:block}
+.livelbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7c4dcc;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.livedot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 1s infinite}
+.livesub{font-size:12px;font-weight:300;color:#6b6560;line-height:1.6}
+.resultbox{display:none;margin-top:14px;text-align:left}
+.resultbox.show{display:block}
 .sms{background:#1a1916;border-radius:12px;padding:14px}
-.sms-tag{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#c8f155;margin-bottom:5px}
-.sms-body{font-size:12px;font-weight:300;color:rgba(255,255,255,.75);line-height:1.7}
-hr.dv{border:none;border-top:1px solid #ede8e0;margin:24px 0}
-.cta-footer{font-size:12px;font-weight:300;color:#6b6560;line-height:1.8}
-.cta-footer a{color:#b797ff;font-weight:500;text-decoration:none}
+.smstag{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#c8f155;margin-bottom:5px}
+.smsbody{font-size:12px;font-weight:300;color:rgba(255,255,255,.75);line-height:1.7}
+hr{border:none;border-top:1px solid #ede8e0;margin:24px 0}
+.footer{font-size:12px;font-weight:300;color:#6b6560;line-height:1.8}
+.footer a{color:#b797ff;font-weight:500;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="bar"><div class="dot"></div>Demo by Omiflow &nbsp;&middot;&nbsp; Built for ${biz}</div>
-
 <div class="card">
   <div class="hi">Hi, ${fname}</div>
   <h1>The call your client made while you were unavailable. Answered.</h1>
   <p class="sub">Every unanswered call is a potential client who moved on. Here is what happens instead.</p>
-
   <div class="steps">
     <div class="step"><div class="num">1</div><div class="st">On ring three of that same call, the line answers and greets your client by your business name</div></div>
     <div class="step"><div class="num">2</div><div class="st">A natural conversation collects their name, reason for calling, and best callback time</div></div>
     <div class="step"><div class="num">3</div><div class="st">You receive a text summary so you can call them back fully informed</div></div>
   </div>
-
   <button class="btn btn-idle" id="btn" onclick="handleClick()">
-    <span id="btn-icon"></span>
-    <span id="btn-lbl">Hear how it sounds</span>
+    <span id="btnicon"></span>
+    <span id="btnlbl">Hear how it sounds</span>
   </button>
-  <div class="sub-note" id="sub-note">No phone needed. Runs in your browser.</div>
-
-  <div class="err" id="err"></div>
-
-  <div class="live" id="live">
-    <div class="live-lbl"><div class="live-dot"></div>Live call in progress</div>
-    <div class="live-sub">Speak as if you are a client calling ${biz}. The assistant will respond naturally.</div>
+  <div class="subnote" id="subnote">No phone needed. Runs in your browser.</div>
+  <div class="errbox" id="errbox"></div>
+  <div class="livebox" id="livebox">
+    <div class="livelbl"><div class="livedot"></div>Live call in progress</div>
+    <div class="livesub">Speak as a customer calling ${biz}. The assistant will respond naturally.</div>
   </div>
-
-  <div class="result" id="result">
+  <div class="resultbox" id="resultbox">
     <div class="sms">
-      <div class="sms-tag">Text sent to you instantly</div>
-      <div class="sms-body">New enquiry received. Caller details and best callback time saved.</div>
+      <div class="smstag">Text sent to you instantly</div>
+      <div class="smsbody">New enquiry received. Caller details and callback time saved.</div>
     </div>
   </div>
-
-  <hr class="dv">
-  <div class="cta-footer">Interested in this for ${biz}?<br>Reply to this email or reach us at <a href="mailto:hello@omiflow.co.uk">hello@omiflow.co.uk</a></div>
+  <hr>
+  <div class="footer">Interested in this for ${biz}?<br>Reply to this email or reach us at <a href="mailto:hello@omiflow.co.uk">hello@omiflow.co.uk</a></div>
 </div>
-
 <script>
 (function(){
   'use strict';
-
-  // Config — injected server-side
-  var VK  = "${vkJs}";
-  var AID = "${aidJs}";
+  var VK  = \`${vkJs}\`;
+  var AID = \`${aidJs}\`;
   var FN  = \`${bizJs}\`;
+  var STATE = 'idle';
+  var sdk = null;
 
-  // ── State ────────────────────────────────────────────────────────────
-  var STATE = 'idle';   // idle | loading | active | done | error
-  var vapiInst = null;
-  var sdkReady  = false;
+  function g(id){ return document.getElementById(id); }
 
-  // ── DOM helpers ──────────────────────────────────────────────────────
-  function q(id){ return document.getElementById(id); }
+  function ui(state, err){
+    STATE = state;
+    var btn  = g('btn');
+    var icon = g('btnicon');
+    var lbl  = g('btnlbl');
+    var note = g('subnote');
+    var errb = g('errbox');
+    var live = g('livebox');
+    icon.innerHTML=''; icon.className='';
+    btn.className='btn';
+    errb.classList.remove('show');
+    live.classList.remove('show');
 
-  function applyState(s, errMsg){
-    STATE = s;
-    var btn    = q('btn');
-    var icon   = q('btn-icon');
-    var lbl    = q('btn-lbl');
-    var note   = q('sub-note');
-    var errEl  = q('err');
-    var liveEl = q('live');
-
-    // Clear icon
-    icon.className = '';
-    icon.innerHTML = '';
-
-    btn.className = 'btn';
-
-    switch(s){
-      case 'idle':
-        btn.classList.add('btn-idle');
-        lbl.textContent = 'Hear how it sounds';
-        note.textContent = 'No phone needed. Runs in your browser.';
-        liveEl.classList.remove('show');
-        errEl.classList.remove('show');
-        break;
-
-      case 'loading':
-        btn.classList.add('btn-loading');
-        lbl.textContent = 'Connecting...';
-        icon.className = 'spin';
-        note.textContent = '';
-        errEl.classList.remove('show');
-        break;
-
-      case 'active':
-        btn.classList.add('btn-active');
-        icon.className = 'pulse-dot';
-        lbl.textContent = 'End call';
-        note.textContent = '';
-        liveEl.classList.add('show');
-        errEl.classList.remove('show');
-        break;
-
-      case 'done':
-        btn.classList.add('btn-done');
-        lbl.textContent = 'Hear it again';
-        note.textContent = 'Thanks for listening.';
-        liveEl.classList.remove('show');
-        q('result').classList.add('show');
-        break;
-
-      case 'error':
-        btn.classList.add('btn-idle');
-        lbl.textContent = 'Try again';
-        note.textContent = '';
-        liveEl.classList.remove('show');
-        if(errMsg){
-          errEl.textContent = errMsg;
-          errEl.classList.add('show');
-        }
-        break;
+    if(state==='idle'){
+      btn.classList.add('btn-idle');
+      lbl.textContent='Hear how it sounds';
+      note.textContent='No phone needed. Runs in your browser.';
+    } else if(state==='loading'){
+      btn.classList.add('btn-loading');
+      icon.className='spin'; lbl.textContent='Connecting...'; note.textContent='';
+    } else if(state==='active'){
+      btn.classList.add('btn-active');
+      lbl.textContent='End call'; note.textContent='';
+      live.classList.add('show');
+    } else if(state==='done'){
+      btn.classList.add('btn-done');
+      lbl.textContent='Hear it again'; note.textContent='';
+      g('resultbox').classList.add('show');
+    } else if(state==='error'){
+      btn.classList.add('btn-idle');
+      lbl.textContent='Try again'; note.textContent='';
+      if(err){ errb.textContent=err; errb.classList.add('show'); }
     }
   }
 
-  // ── SDK loader ───────────────────────────────────────────────────────
-  // Uses the official Vapi HTML script tag CDN (window.vapiSDK)
-  // Falls back to community UMD bundle (window.Vapi)
   function loadSDK(cb){
-    if(sdkReady){ cb(null); return; }
-
-    function tryScript(url, onDone){
-      var s = document.createElement('script');
-      s.src = url;
-      s.async = true;
-
-      var t = setTimeout(function(){
-        s.onload = s.onerror = null;
-        onDone(new Error('timeout'));
-      }, 10000);
-
-      s.onload = function(){
-        clearTimeout(t);
-        // Poll up to 3s for either window.vapiSDK or window.Vapi
-        var n = 0;
-        var poll = setInterval(function(){
-          n++;
-          if(window.vapiSDK || window.Vapi){
-            clearInterval(poll);
-            onDone(null);
-          } else if(n >= 30){
-            clearInterval(poll);
-            onDone(new Error('SDK not exported after load'));
-          }
-        }, 100);
-      };
-
-      s.onerror = function(){
-        clearTimeout(t);
-        onDone(new Error('script error'));
-      };
-
-      document.head.appendChild(s);
-    }
-
-    // Primary: official vapiSDK html-script-tag
-    tryScript(
-      'https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js',
-      function(err){
-        if(!err && window.vapiSDK){ sdkReady = true; cb(null); return; }
-        // Fallback: community UMD bundle that wraps @vapi-ai/web properly for browsers
-        tryScript(
-          'https://cdn.jsdelivr.net/gh/balacodeio/Vapi-Web-UMD@2.1.0/dist/2.1.0/vapi-web-bundle-2.1.0.min.js',
-          function(err2){
-            if(!err2 && window.Vapi){ sdkReady = true; cb(null); return; }
-            cb(new Error('Could not load voice SDK. Please check your internet connection and try again.'));
-          }
-        );
-      }
-    );
+    if(window.vapiSDK){ cb(null); return; }
+    var done=false;
+    function finish(e){ if(done)return; done=true; cb(e); }
+    var s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js';
+    s.async=true;
+    var t=setTimeout(function(){ finish(new Error('SDK load timeout')); },12000);
+    s.onload=function(){
+      clearTimeout(t);
+      var n=0; var poll=setInterval(function(){
+        n++;
+        if(window.vapiSDK){ clearInterval(poll); finish(null); }
+        else if(n>40){ clearInterval(poll); finish(new Error('SDK loaded but vapiSDK not found')); }
+      },100);
+    };
+    s.onerror=function(){ clearTimeout(t); finish(new Error('Failed to load voice SDK script')); };
+    document.head.appendChild(s);
   }
 
-  // ── Vapi instance factory ────────────────────────────────────────────
-  function createVapi(cb){
-    if(!VK || !AID){
-      cb(new Error('Demo not fully configured. Vapi keys missing. Contact hello@omiflow.co.uk'));
+  function initSDK(cb){
+    if(sdk){ cb(null); return; }
+    if(!VK||!AID){
+      cb(new Error('Vapi keys not configured. Contact hello@omiflow.co.uk'));
       return;
     }
-
     loadSDK(function(err){
       if(err){ cb(err); return; }
-
-      if(vapiInst){ cb(null); return; }
-
       try{
-        // vapiSDK.run() — official approach, returns a Vapi-compatible instance
-        // The floating button is hidden by CSS above
-        if(window.vapiSDK){
-          vapiInst = window.vapiSDK.run({
-            apiKey: VK,
-            assistant: AID,
-            config: { position: 'bottom-right', offset: '-9999px 0px' }
-          });
-        } else {
-          // Community UMD fallback
-          vapiInst = new window.Vapi(VK);
-        }
-
-        vapiInst.on('call-start', function(){
-          applyState('active');
+        // Log exact values for debugging
+        console.log('[Vapi] Public key present:', VK.length > 0);
+        console.log('[Vapi] Assistant ID present:', AID.length > 0);
+        console.log('[Vapi] Business name:', FN);
+        sdk = window.vapiSDK.run({
+          apiKey: VK,
+          assistant: AID,
+          config: { position:'bottom-right', offset:'-9999px -9999px' }
         });
-
-        vapiInst.on('call-end', function(){
-          applyState('done');
-        });
-
-        vapiInst.on('error', function(e){
+        sdk.on('call-start', function(){ ui('active'); });
+        sdk.on('call-end',   function(){ ui('done'); });
+        sdk.on('error', function(e){
           console.error('[Vapi error]', e);
-          var msg = (e && (e.message || e.error || String(e))) || '';
-          if(/permission|denied|notallowed|microphone/i.test(msg)){
-            applyState('error', 'Microphone access was denied. Click the padlock icon in your browser address bar, allow Microphone, then refresh and try again.');
-          } else if(/invalid|key|auth|unauthorized/i.test(msg)){
-            applyState('error', 'Configuration issue. Please contact hello@omiflow.co.uk to report this.');
+          var msg = (e&&(e.message||e.error||JSON.stringify(e)))||'Unknown error';
+          if(/401|unauthori/i.test(msg)){
+            msg='Authentication failed. The Vapi public key may be incorrect. Contact hello@omiflow.co.uk';
+          } else if(/denied|microphone|permission/i.test(msg)){
+            msg='Microphone access denied. Click the padlock in your browser address bar, allow Microphone, and refresh.';
           } else {
-            applyState('error', 'The call ended unexpectedly. Please refresh and try again.');
+            msg='Call ended unexpectedly. Please try again.';
           }
+          ui('error', msg);
         });
-
         cb(null);
       } catch(ex){
-        cb(new Error('Could not initialise voice assistant: ' + (ex.message || String(ex))));
+        cb(new Error('SDK init error: '+(ex.message||String(ex))));
       }
     });
   }
 
-  // ── Button handler ───────────────────────────────────────────────────
   window.handleClick = function(){
-    if(STATE === 'loading') return;
-
-    // If call is active, end it
-    if(STATE === 'active'){
-      if(vapiInst){
-        try{ vapiInst.stop(); } catch(e){ console.warn('[Vapi stop]', e); }
-      }
+    if(STATE==='loading') return;
+    if(STATE==='active'){
+      if(sdk){ try{ sdk.stop(); }catch(e){ console.warn('[Vapi stop]',e); } }
       return;
     }
-
-    applyState('loading');
-
-    // Request microphone permission first — gives cleaner error message if denied
-    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-      applyState('error', 'Your browser does not support microphone access. Please use Chrome, Edge, or Safari.');
+    ui('loading');
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      ui('error','Your browser does not support microphone access. Please use Chrome, Edge, or Safari.');
       return;
     }
-
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(function(stream){
-        stream.getTracks().forEach(function(t){ t.stop(); }); // release immediately
-
-        createVapi(function(err){
-          if(err){ applyState('error', err.message); return; }
-
-          try{
-            var p = vapiInst.start(AID, { variableValues: { firmName: FN } });
-            if(p && typeof p.catch === 'function'){
-              p.catch(function(e){
-                var msg = (e && (e.message || String(e))) || '';
-                if(/invalid|key|auth/i.test(msg)){
-                  applyState('error', 'Could not connect. Please contact hello@omiflow.co.uk');
-                } else {
-                  applyState('error', 'Could not start the call. Please refresh and try again.');
-                }
-              });
-            }
-          } catch(e){
-            applyState('error', 'Could not start the call: ' + (e.message || String(e)));
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      stream.getTracks().forEach(function(t){ t.stop(); });
+      initSDK(function(err){
+        if(err){ ui('error',err.message); return; }
+        try{
+          console.log('[Vapi] Calling start() with assistant:', AID, 'variableValues:', {firmName:FN});
+          var p = sdk.start(AID, { variableValues:{ firmName:FN } });
+          if(p&&typeof p.catch==='function'){
+            p.catch(function(e){
+              var m=(e&&(e.message||String(e)))||'';
+              console.error('[Vapi start error]', e);
+              if(/401|unauthori/i.test(m)) ui('error','Authentication failed (401). Check the Vapi public key in Vercel environment variables.');
+              else ui('error','Could not start call. Please refresh and try again.');
+            });
           }
-        });
-      })
-      .catch(function(err){
-        if(/denied|notallowed/i.test((err.name || err.message || ''))){
-          applyState('error', 'Microphone access was denied. Click the padlock icon in your browser address bar, allow Microphone, then refresh and try again.');
-        } else {
-          applyState('error', 'Could not access your microphone. Please check your browser settings and try again.');
+        } catch(ex){
+          ui('error','Call start error: '+(ex.message||String(ex)));
         }
       });
+    }).catch(function(err){
+      if(/denied|notallowed/i.test(err.name||err.message||''))
+        ui('error','Microphone access denied. Click the padlock in your address bar, allow Microphone, and refresh.');
+      else
+        ui('error','Could not access microphone. Check your browser settings.');
+    });
   };
 
-  // ── Pre-warm SDK in background ────────────────────────────────────────
   window.addEventListener('load', function(){
     loadSDK(function(err){
-      if(!err) createVapi(function(){});
+      if(!err) initSDK(function(){
+        console.log('[Vapi] Pre-warmed successfully');
+      });
     });
   });
-
 })();
 </script>
 </body>
