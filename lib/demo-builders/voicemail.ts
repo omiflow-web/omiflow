@@ -132,8 +132,8 @@ function startDemo() {
 }
 
 function initVapi() {
-  var VK  = `${vkJs}`;
-  var AID = `${aidJs}`;
+  var VK  = "${vkJs}";
+  var AID = "${aidJs}";
 
   console.log('[Vapi] Initialising. Key length:', VK.length, '| AID:', AID);
   console.log('[Vapi] window.vapiSDK type:', typeof window.vapiSDK);
