@@ -76,7 +76,7 @@ hr{border:none;border-top:1px solid #ede8e0;margin:24px 0}
     <div class="step"><div class="num">2</div><div class="st">A natural conversation collects their name, reason for calling, and best callback time</div></div>
     <div class="step"><div class="num">3</div><div class="st">You receive a text summary so you can call them back fully informed</div></div>
   </div>
-  <button class="btn btn-idle" id="btn" onclick="handleClick()">
+  <button class="btn btn-idle" id="btn" onclick="startDemo()">
     <span id="btnicon"></span>
     <span id="btnlbl">Hear how it sounds</span>
   </button>
@@ -96,158 +96,160 @@ hr{border:none;border-top:1px solid #ede8e0;margin:24px 0}
   <div class="footer">Interested in this for ${biz}?<br>Reply to this email or reach us at <a href="mailto:hello@omiflow.co.uk">hello@omiflow.co.uk</a></div>
 </div>
 <script>
-(function(){
-  'use strict';
-  var VK  = \`${vkJs}\`;
-  var AID = \`${aidJs}\`;
-  var FN  = \`${bizJs}\`;
-  var STATE = 'idle';
-  var sdk = null;
+var vapiInstance = null;
 
-  function g(id){ return document.getElementById(id); }
+function startDemo() {
+  var btn = document.getElementById('btn');
+  var btnlbl = document.getElementById('btnlbl');
+  var errbox = document.getElementById('errbox');
+  var livebox = document.getElementById('livebox');
 
-  function ui(state, err){
-    STATE = state;
-    var btn  = g('btn');
-    var icon = g('btnicon');
-    var lbl  = g('btnlbl');
-    var note = g('subnote');
-    var errb = g('errbox');
-    var live = g('livebox');
-    icon.innerHTML=''; icon.className='';
-    btn.className='btn';
-    errb.classList.remove('show');
-    live.classList.remove('show');
+  // Clear previous error
+  errbox.style.display = 'none';
+  errbox.textContent = '';
 
-    if(state==='idle'){
-      btn.classList.add('btn-idle');
-      lbl.textContent='Hear how it sounds';
-      note.textContent='No phone needed. Runs in your browser.';
-    } else if(state==='loading'){
-      btn.classList.add('btn-loading');
-      icon.className='spin'; lbl.textContent='Connecting...'; note.textContent='';
-    } else if(state==='active'){
-      btn.classList.add('btn-active');
-      lbl.textContent='End call'; note.textContent='';
-      live.classList.add('show');
-    } else if(state==='done'){
-      btn.classList.add('btn-done');
-      lbl.textContent='Hear it again'; note.textContent='';
-      g('resultbox').classList.add('show');
-    } else if(state==='error'){
-      btn.classList.add('btn-idle');
-      lbl.textContent='Try again'; note.textContent='';
-      if(err){ errb.textContent=err; errb.classList.add('show'); }
-    }
-  }
+  // Update button state
+  btn.disabled = true;
+  btnlbl.textContent = 'Connecting...';
 
-  function loadSDK(cb){
-    if(window.vapiSDK){ cb(null); return; }
-    var done=false;
-    function finish(e){ if(done)return; done=true; cb(e); }
-    var s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js';
-    s.async=true;
-    var t=setTimeout(function(){ finish(new Error('SDK load timeout')); },12000);
-    s.onload=function(){
-      clearTimeout(t);
-      var n=0; var poll=setInterval(function(){
-        n++;
-        if(window.vapiSDK){ clearInterval(poll); finish(null); }
-        else if(n>40){ clearInterval(poll); finish(new Error('SDK loaded but vapiSDK not found')); }
-      },100);
+  // Load SDK if not already loaded
+  if (!window.vapiSDK) {
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js';
+    script.defer = true;
+    script.async = true;
+    script.onload = function() {
+      console.log('[Vapi] SDK script loaded. window.vapiSDK:', typeof window.vapiSDK);
+      initVapi();
     };
-    s.onerror=function(){ clearTimeout(t); finish(new Error('Failed to load voice SDK script')); };
-    document.head.appendChild(s);
+    script.onerror = function() {
+      showError('Failed to load voice SDK. Check your internet connection.');
+    };
+    document.head.appendChild(script);
+  } else {
+    initVapi();
+  }
+}
+
+function initVapi() {
+  var VK  = `${vkJs}`;
+  var AID = `${aidJs}`;
+
+  console.log('[Vapi] Initialising. Key length:', VK.length, '| AID:', AID);
+  console.log('[Vapi] window.vapiSDK type:', typeof window.vapiSDK);
+  console.log('[Vapi] window.vapiSDK.run type:', typeof (window.vapiSDK && window.vapiSDK.run));
+
+  if (!window.vapiSDK || typeof window.vapiSDK.run !== 'function') {
+    showError('vapiSDK not available after script load. Check browser console.');
+    return;
   }
 
-  function initSDK(cb){
-    if(sdk){ cb(null); return; }
-    if(!VK||!AID){
-      cb(new Error('Vapi keys not configured. Contact hello@omiflow.co.uk'));
-      return;
-    }
-    loadSDK(function(err){
-      if(err){ cb(err); return; }
-      try{
-        // Log exact values for debugging
-        console.log('[Vapi] Public key present:', VK.length > 0);
-        console.log('[Vapi] Assistant ID present:', AID.length > 0);
-        console.log('[Vapi] Business name:', FN);
-        console.log('[Vapi] Key prefix:', VK.slice(0,8), '| Assistant:', AID);
-        sdk = window.vapiSDK.run({
-          apiKey: VK,
-          assistant: AID,
-          assistantOverrides: { variableValues: { firmName: FN } },
-          config: { position:'bottom-right', offset:'-9999px -9999px' }
-        });
-        sdk.on('call-start', function(){ ui('active'); });
-        sdk.on('call-end',   function(){ ui('done'); });
-        sdk.on('error', function(e){
-          console.error('[Vapi error]', e);
-          var msg = (e&&(e.message||e.error||JSON.stringify(e)))||'Unknown error';
-          if(/401|unauthori/i.test(msg)){
-            msg='Authentication failed. The Vapi public key may be incorrect. Contact hello@omiflow.co.uk';
-          } else if(/denied|microphone|permission/i.test(msg)){
-            msg='Microphone access denied. Click the padlock in your browser address bar, allow Microphone, and refresh.';
-          } else {
-            msg='Call ended unexpectedly. Please try again.';
-          }
-          ui('error', msg);
-        });
-        cb(null);
-      } catch(ex){
-        cb(new Error('SDK init error: '+(ex.message||String(ex))));
+  try {
+    // Official pattern: vapiSDK.run() returns Vapi instance
+    // Config hides the built-in button — we use our own
+    vapiInstance = window.vapiSDK.run({
+      apiKey: VK,
+      assistant: AID,
+      config: {
+        position: 'bottom-right',
+        offset: '500px',
+        width: '50px',
+        height: '50px',
+        idle: { color: 'transparent', type: 'pill', title: '', subtitle: '', icon: '' },
+        loading: { color: 'transparent', type: 'pill', title: '', subtitle: '', icon: '' },
+        active: { color: 'transparent', type: 'pill', title: '', subtitle: '', icon: '' }
       }
     });
+
+    console.log('[Vapi] Instance created:', vapiInstance);
+    console.log('[Vapi] Instance type:', typeof vapiInstance);
+    console.log('[Vapi] Has start method:', typeof (vapiInstance && vapiInstance.start));
+
+    // Attach all events — log raw objects for debugging
+    vapiInstance.on('call-start', function() {
+      console.log('[Vapi] EVENT: call-start');
+      document.getElementById('btn').disabled = false;
+      document.getElementById('btn').style.background = '#fc5c7c';
+      document.getElementById('btnlbl').textContent = 'End call';
+      document.getElementById('btn').onclick = function() { stopDemo(); };
+      document.getElementById('livebox').style.display = 'block';
+    });
+
+    vapiInstance.on('call-end', function() {
+      console.log('[Vapi] EVENT: call-end');
+      resetButton();
+      document.getElementById('resultbox').style.display = 'block';
+    });
+
+    vapiInstance.on('speech-start', function() {
+      console.log('[Vapi] EVENT: speech-start');
+    });
+
+    vapiInstance.on('speech-end', function() {
+      console.log('[Vapi] EVENT: speech-end');
+    });
+
+    vapiInstance.on('message', function(msg) {
+      console.log('[Vapi] EVENT: message', JSON.stringify(msg));
+    });
+
+    vapiInstance.on('error', function(err) {
+      // Log raw error — no translation
+      console.error('[Vapi] EVENT: error — RAW OBJECT:');
+      console.error(err);
+      console.error('[Vapi] error.message:', err && err.message);
+      console.error('[Vapi] error.error:', err && err.error);
+      console.error('[Vapi] error type:', err && err.type);
+      console.error('[Vapi] JSON:', JSON.stringify(err));
+      showError('Vapi error — see browser console for raw details. Type: ' + (err && (err.type || err.message || JSON.stringify(err))));
+    });
+
+    // Now start the call — official API: start(assistantId, overrides?)
+    // variableValues removed temporarily to isolate auth issue
+    console.log('[Vapi] Calling start() with AID:', AID);
+    var callPromise = vapiInstance.start(AID);
+    console.log('[Vapi] start() returned:', callPromise);
+
+    if (callPromise && typeof callPromise.then === 'function') {
+      callPromise.then(function(call) {
+        console.log('[Vapi] start() resolved with call object:', call);
+      }).catch(function(err) {
+        console.error('[Vapi] start() promise rejected — RAW:');
+        console.error(err);
+        console.error('[Vapi] rejection message:', err && err.message);
+        console.error('[Vapi] rejection JSON:', JSON.stringify(err));
+        showError('start() failed — see console. ' + (err && (err.message || JSON.stringify(err))));
+      });
+    }
+
+  } catch(ex) {
+    console.error('[Vapi] Exception during init/start:', ex);
+    showError('Exception: ' + ex.message);
   }
+}
 
-  window.handleClick = function(){
-    if(STATE==='loading') return;
-    if(STATE==='active'){
-      if(sdk){ try{ sdk.stop(); }catch(e){ console.warn('[Vapi stop]',e); } }
-      return;
-    }
-    ui('loading');
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-      ui('error','Your browser does not support microphone access. Please use Chrome, Edge, or Safari.');
-      return;
-    }
-    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
-      stream.getTracks().forEach(function(t){ t.stop(); });
-      initSDK(function(err){
-        if(err){ ui('error',err.message); return; }
-        try{
-          console.log('[Vapi] Calling start() | assistant:', AID, '| key prefix:', VK.slice(0,8));
-          var p = sdk.start();
-          if(p&&typeof p.catch==='function'){
-            p.catch(function(e){
-              var m=(e&&(e.message||String(e)))||'';
-              console.error('[Vapi start error]', e);
-              if(/401|unauthori/i.test(m)) ui('error','Authentication failed (401). Check the Vapi public key in Vercel environment variables.');
-              else ui('error','Could not start call. Please refresh and try again.');
-            });
-          }
-        } catch(ex){
-          ui('error','Call start error: '+(ex.message||String(ex)));
-        }
-      });
-    }).catch(function(err){
-      if(/denied|notallowed/i.test(err.name||err.message||''))
-        ui('error','Microphone access denied. Click the padlock in your address bar, allow Microphone, and refresh.');
-      else
-        ui('error','Could not access microphone. Check your browser settings.');
-    });
-  };
+function stopDemo() {
+  if (vapiInstance) {
+    vapiInstance.stop();
+  }
+}
 
-  window.addEventListener('load', function(){
-    loadSDK(function(err){
-      if(!err) initSDK(function(){
-        console.log('[Vapi] Pre-warmed successfully');
-      });
-    });
-  });
-})();
+function showError(msg) {
+  console.error('[Vapi] showError:', msg);
+  var errbox = document.getElementById('errbox');
+  errbox.textContent = msg;
+  errbox.style.display = 'block';
+  resetButton();
+}
+
+function resetButton() {
+  var btn = document.getElementById('btn');
+  btn.disabled = false;
+  btn.style.background = '#b797ff';
+  document.getElementById('btnlbl').textContent = 'Try again';
+  btn.onclick = function() { startDemo(); };
+  document.getElementById('livebox').style.display = 'none';
+}
 </script>
 </body>
 </html>`
