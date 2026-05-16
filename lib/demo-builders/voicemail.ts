@@ -132,8 +132,8 @@ function startDemo() {
 }
 
 function initVapi() {
-  var VK  = "${vkJs}";
-  var AID = "${aidJs}";
+  var VK  = `${vkJs}`;
+  var AID = `${aidJs}`;
 
   console.log('[Vapi] Initialising. Key length:', VK.length, '| AID:', AID);
   console.log('[Vapi] window.vapiSDK type:', typeof window.vapiSDK);
@@ -206,8 +206,10 @@ function initVapi() {
 
     // Now start the call — official API: start(assistantId, overrides?)
     // variableValues removed temporarily to isolate auth issue
-    console.log('[Vapi] Calling start() with AID:', AID);
-    var callPromise = vapiInstance.start(AID);
+    console.log('[Vapi] Calling start() with AID:', AID, '| firmName:', FN);
+    var callPromise = vapiInstance.start(AID, {
+      variableValues: { firmName: FN }
+    });
     console.log('[Vapi] start() returned:', callPromise);
 
     if (callPromise && typeof callPromise.then === 'function') {
